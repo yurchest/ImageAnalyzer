@@ -38,11 +38,11 @@ class App(QWidget):
     def get_file_name(self):
         self.path_img, _ = QFileDialog.getOpenFileName(self.main_window, 'Выберите файл', './',
                                                        'Image Files(*.bmp)')
-        self.w_root.label_2.setText(self.path_img)
+        # self.w_root.label_2.setText(self.path_img)
 
     def show_image(self):
         self.pixmap = QPixmap(self.path_img)
-        self.w_root.label_3.resize(self.pixmap.width(), self.pixmap.height())
+        # self.w_root.label_3.resize(self.pixmap.height(), self.pixmap.width())
         img = Image.open(self.path_img)
         self.line_with_max_brightness = functions.line_with_max_brightness(img)
         self.line_with_max_brightness[1] = int(self.pixmap.height()/2)
