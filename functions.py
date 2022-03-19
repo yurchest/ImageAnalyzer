@@ -38,14 +38,14 @@ def get_x_y(pixel_values, index_max_sum_line):
     return [x, y]
 
 
-def write_in_file(width, x, y, ugl_size):
+def write_in_file(x, y, ugl_size=None):
     fp = open('file.txt', 'w')
     fp.write('Date/Time : ' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + '\n')
     fp.write('Угловой размер пикселя = ' + str(ugl_size) + '\n\n')
-    for i in range(width):
+    for i in range(len(y)):
         # fp.write(str(x[i]))
         fp.write(f"%{len(str(max(x))) + 1}.6f%{len(str(max(y))) + 10}.5f\n" % (x[i], y[i]))
-        print(x[i])
+        # print(x[i])
     fp.close()
 
 
@@ -56,5 +56,3 @@ def show_plt(x, y):
     plt.axvline(x=0, color='green', ls=':', lw=2)
     plt.plot(x, y)
     plt.show()
-
-

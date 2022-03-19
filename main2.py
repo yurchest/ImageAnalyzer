@@ -77,6 +77,7 @@ class App(QWidget):
     def delete_label(self):
         self.w_root.label_4.setText('')
 
+
     def button3_clicked(self):
         try:
             functions.show_plt\
