@@ -2,5 +2,6 @@
 /dist/
 /build
 /.idea
+/venv
 /venv2/
 /venv3.8/
