@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QTimer, Qt
+
 from PyQt5.QtWidgets import QApplication, QWidget, QFileDialog, QMessageBox
 from form import *
 from functions2 import *
@@ -20,8 +20,10 @@ class App(QWidget):
         self.w_root.pushButton_3.clicked.connect(self.button3_clicked)
         self.w_root.pushButton_4.clicked.connect(self.button4_clicked)
         self.w_root.pushButton_7.clicked.connect(self.button7_clicked)
-        self.w_root.pushButton_5.clicked.connect(self.button5_clicked)
-        self.w_root.pushButton_6.clicked.connect(self.button6_clicked)
+        self.w_root.pushButton_5.pressed.connect(self.button5_clicked)
+        self.w_root.pushButton_5.released.connect(self.update_line)
+        self.w_root.pushButton_6.pressed.connect(self.button6_clicked)
+        self.w_root.pushButton_6.released.connect(self.update_line)
 
         self.file_opened = False
 
@@ -57,19 +59,26 @@ class App(QWidget):
 
     def button5_clicked(self):
         if self.file_opened:
-            self.Img1.line_up()
             self.w_root.statusbar.showMessage("Обработка ... ")
+            self.Img1.line_up()
             self.update_image()
-            self.line = self.Img1.get_current_line()
             self.w_root.statusbar.showMessage("Готово ", 100)
         else:
             self.w_root.statusbar.showMessage("Файл не открыт ", 1500)
 
     def button6_clicked(self):
         if self.file_opened:
-            self.Img1.line_down()
             self.w_root.statusbar.showMessage("Обработка ... ")
+            self.Img1.line_down()
             self.update_image()
+            self.w_root.statusbar.showMessage("Готово ", 100)
+        else:
+            self.w_root.statusbar.showMessage("Файл не открыт ", 1500)
+            pass
+
+    def update_line(self):
+        if self.file_opened:
+            self.w_root.statusbar.showMessage("Обработка ... ")
             self.line = self.Img1.get_current_line()
             self.w_root.statusbar.showMessage("Готово ", 100)
         else:
