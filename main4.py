@@ -33,7 +33,7 @@ class App(QWidget):
             self.Img1 = Img(self.path_img)
             self.update_image()
             self.line = self.Img1.get_current_line()
-            self.x = [i for i in range(len(self.line))]
+            # self.x = [i for i in range(len(self.line))]
             self.file_opened = True
 
     def get_file_name(self):

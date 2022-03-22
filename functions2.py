@@ -22,8 +22,9 @@ def init_image(img_path):
 
 class Img(App):
     def __init__(self, img_path):
-        path = os.path.join(os.getcwd(), 'func.so')
+        path = os.path.join(os.getcwd(), 'lib.so')
         self.cpp_functions = CDLL(path)
+
         self.img = cv2.imread(img_path)
         self.img = cv2.cvtColor(self.img, cv2.COLOR_BGR2GRAY)
         print(self.img.shape)
@@ -38,14 +39,19 @@ class Img(App):
                      img.shape[0], img.shape[1] * 3, QImage.Format_RGB888)
         pix = QPixmap(img)
         return pix
-        cv2.imshow('aboba', img)
+        # cv2.imshow('aboba', img)
 
     def get_max_line_bright(self):
 
         pass
 
     def get_current_line(self):
-        index_max = self.cpp_functions.index_max_in_array(self.img[self.line[0][1]], len(self.img[self.line[0][1]]))
+        # self.cpp_functions.index_max_in_array.restype = c_short
+        self.cpp_functions.index_max_in_array.argtypes = [POINTER(c_short * len(self.img[self.line[0][1]])), c_int]
+        array = (c_short * len(self.img[self.line[0][1]]))(*self.img[self.line[0][1]])
+        print(len(self.img[self.line[0][1]]))
+        index_max = self.cpp_functions.index_max_in_array(byref(array), len(self.img[self.line[0][1]]))
+        print(index_max)
         x = self.cpp_functions.get_x(self.img[self.line[0][1]], index_max,len(self.img[self.line[0][1]]))
         print(x)
         return (x, self.img[self.line[0][1]])
@@ -60,3 +66,7 @@ class Img(App):
         if self.line[0][1] < self.img.shape[0]:
             self.line[0][1] += 1
             self.line[1][1] += 1
+
+
+# g++ -c -fPIC foo.cpp -o foo.o
+# g++ -shared -Wl,-soname,libfoo.so -o libfoo.so  foo.o
