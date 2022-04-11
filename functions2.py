@@ -5,7 +5,6 @@ import numpy as np
 from main4 import App
 import os
 from ctypes import *
-from ctypes import cdll
 
 
 def init_image(img_path):
