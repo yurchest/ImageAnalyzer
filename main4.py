@@ -1,4 +1,3 @@
-
 from PyQt5.QtWidgets import QApplication, QWidget, QFileDialog, QMessageBox
 from form import *
 from functions2 import *
