@@ -1,7 +1,7 @@
 import numpy
 from matplotlib import pyplot as plt
 from datetime import datetime
-
+from scipy.signal import find_peaks
 
 def line_with_max_brightness(img):
     width, height = img.size
@@ -49,10 +49,28 @@ def write_in_file(x, y, ugl_size=None):
     fp.close()
 
 
-def show_plt(x, y):
+def show_plt(x, y, vertline=0):
+    y = numpy.array(y)
+    y_tomin = numpy.multiply(y, -1)
     plt.title("Диаграмма направленности")
     plt.xlabel("x")
     plt.ylabel("y")
-    plt.axvline(x=0, color='green', ls=':', lw=2)
-    plt.plot(x, y)
+    plt.axvline(vertline, color='green', ls=':', lw=2)
+    plt.plot(x,y)
+    try:
+        peaks, _ = find_peaks(y, height=70, distance=10, prominence=10, width=40)
+        plt.plot(peaks, y[peaks], "x")
+    except:
+        pass
+    try:
+        lows, _ = find_peaks(y_tomin, distance=10, prominence=10, width=20)
+        plt.plot(lows, y[lows], "x")
+    except:
+        pass
+    # leng = peaks[1] - peaks[0]
+    # print(leng/16.289)
+
+
+
     plt.show()
+

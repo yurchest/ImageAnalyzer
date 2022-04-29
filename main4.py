@@ -31,17 +31,17 @@ class App(QWidget):
     def open_file(self):
         try:
             if self.get_file_name():
-                self.w_root.label_2.setText(self.path_img)
                 self.Img1 = Img(self.path_img)
                 self.pixel_ugl_size = 1
                 self.update_image()
                 self.line = self.Img1.get_current_line()
                 # self.x = [i for i in range(len(self.line))]
+                self.w_root.label_2.setText(self.path_img)
                 self.file_opened = True
         except Exception as err:
             error = QMessageBox()
             error.setWindowTitle("Ошибка")
-            error.setText("Не удалось отрыть файл.\n Попробуйте использовать путь только на латинице \n\n" + str(err))
+            error.setText("Не удалось отрыть файл.\n Попробуйте использовать имя файла и путь к нему только на латинице \n\n" + str(err))
             error.setIcon(QMessageBox.Information)
             error.exec()
 
@@ -129,10 +129,10 @@ class App(QWidget):
             try:
                 self.w_root.statusbar.showMessage("Обработка ... ")
                 self.line[0] = self.Img1.recalc_x_with_ugl_size(self.pixel_ugl_size)
-                show_plt \
-                    (self.line[0], self.line[1])
+                show_plt(self.line[0], self.line[1])
                 self.w_root.statusbar.showMessage("Готово ", 1500)
             except Exception as err:
+                raise
                 error = QMessageBox()
                 error.setWindowTitle("Ошибка")
                 error.setText("Ошибка построения графика\n" + str(err))

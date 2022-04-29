@@ -59,8 +59,10 @@ class Img(App):
         x = np.empty(len_arr, dtype=c_short)
         array_x = (c_short * len_arr)(*x)
         self.cpp_functions.get_x(byref(array_x), array, len_arr, index_max)
-        self.x = list(array_x)
-        return [list(array_x), list(self.img[self.line[0][1]])]
+        # self.x = list(array_x)
+        self.x = list(range(0, len_arr, 1))
+        # return [list(array_x), list(self.img[self.line[0][1]])]
+        return [list(range(0,len_arr,1)), self.img[self.line[0][1]]]
 
     def line_up(self):
         if self.line[0][1] > 0:
