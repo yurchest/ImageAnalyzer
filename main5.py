@@ -158,6 +158,8 @@ class App(QWidget):
                     self.ax.plot(np.divide(self.right2,self.pixel_ugl_size), line[self.right2], "x")
                     self.ax.plot(np.divide(self.right1,self.pixel_ugl_size), line[self.right1], "x")
 
+                    self.ax.grid(axis="y")
+
                     self.ax.axvline(np.divide(self.mean1,self.pixel_ugl_size),ymax=self.mean1_y/self.ax.get_ylim()[1], color='green', ls=':', lw=1)
                     self.ax.axvline(np.divide(self.mean2,self.pixel_ugl_size),ymax=self.mean2_y/self.ax.get_ylim()[1], color='green', ls=':', lw=1)
                     # self.ax.axhline(y=10, xmin=np.divide(self.mean1,self.pixel_ugl_size)/self.ax.get_xlim()[1],xmax=np.divide(self.mean2,self.pixel_ugl_size)/self.ax.get_xlim()[1] ,color='green', ls=':', lw=1)
