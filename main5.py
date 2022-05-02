@@ -10,8 +10,6 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
 from scipy.signal import find_peaks
 
-import scipy.stats as sps
-
 
 class App(QWidget):
     def __init__(self):
@@ -144,9 +142,9 @@ class App(QWidget):
                     self.local_min = int(np.mean(self.lows))
                     self.left1, self.right1 = self.find_left_right(line[0:self.peaks[0]],
                                                                    line[self.peaks[0]:self.local_min],
-                                                                   line[self.local_min] + 10, 0, self.peaks[0])
+                                                                   line[self.local_min] + 15, 0, self.peaks[0])
                     self.left2, self.right2 = self.find_left_right(line[self.local_min:self.peaks[1]],
-                                                                   line[self.peaks[1]:], line[self.local_min] + 10,
+                                                                   line[self.peaks[1]:], line[self.local_min] + 15,
                                                                    self.local_min, self.peaks[1])
                     self.mean1, self.mean2 = self.find_means(line[self.left1:self.right1], line[self.left2:self.right2],
                                                              self.left1, self.left2)
@@ -157,13 +155,12 @@ class App(QWidget):
                     # self.ax.plot(list(line).index(mean), np.mean(line), "x")
                     # self.ax.plot(self.right11, line[self.right11], "x")
                     # self.ax.plot(self.left11, line[self.left11], "x")
-                    self.ax.plot(np.divide(self.mean1, self.pixel_ugl_size), self.mean1_y, "x",color='purple')
-                    self.ax.plot(np.divide(self.mean2, self.pixel_ugl_size), self.mean2_y, "x",color='purple')
-                    self.ax.plot(np.divide(self.left1, self.pixel_ugl_size), line[self.left1], "x",color='black')
-                    self.ax.plot(np.divide(self.left2, self.pixel_ugl_size), line[self.left2], "x",color='black')
-                    self.ax.plot(np.divide(self.right2, self.pixel_ugl_size), line[self.right2], "x",color='black')
-                    self.ax.plot(np.divide(self.right1, self.pixel_ugl_size), line[self.right1], "x",color='black')
-
+                    self.ax.plot(np.divide(self.mean1, self.pixel_ugl_size), self.mean1_y, "x", color='purple')
+                    self.ax.plot(np.divide(self.mean2, self.pixel_ugl_size), self.mean2_y, "x", color='purple')
+                    self.ax.plot(np.divide(self.left1, self.pixel_ugl_size), line[self.left1], "x", color='black')
+                    self.ax.plot(np.divide(self.left2, self.pixel_ugl_size), line[self.left2], "x", color='black')
+                    self.ax.plot(np.divide(self.right2, self.pixel_ugl_size), line[self.right2], "x", color='black')
+                    self.ax.plot(np.divide(self.right1, self.pixel_ugl_size), line[self.right1], "x", color='black')
 
                     self.ax.axvline(np.divide(self.mean1, self.pixel_ugl_size),
                                     ymax=self.mean1_y / self.ax.get_ylim()[1], color='green', ls=':', lw=1)
@@ -194,7 +191,6 @@ class App(QWidget):
         self.ax2 = self.ax.twinx()
         self.ax2.set_ylabel("Уровень")
 
-
     def write_in_file(self):
         fp = open('file.txt', 'w')
         y = self.Img1.get_line()
@@ -213,7 +209,7 @@ class App(QWidget):
 
     def find_local_min(self, y):
         y1 = np.multiply(y, -1)
-        self.lows, _ = find_peaks(y1, height=-50, distance=10, prominence=10, width=5)
+        self.lows, _ = find_peaks(y1, height=-60, distance=10, prominence=10, width=5)
         self.lows = self.lows + self.peaks[0]
 
     def find_means(self, y1, y2, plus1, plus2):
@@ -241,7 +237,6 @@ class App(QWidget):
         for i in range(y1.size):
             left_sum += y1[i]
             right_sum -= y1[i]
-
             if (right_sum - left_sum) < 500:
                 mean1 = i + plus1
                 break

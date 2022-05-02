@@ -6,7 +6,6 @@ import numpy as np
 class Img():
     def __init__(self, img_path):
         self.img = cv2.imread(img_path)
-        print(type(self.img))
         self.img = cv2.cvtColor(self.img, cv2.COLOR_BGR2GRAY)
         self.line = [[0, self.img.shape[0] // 2], [self.img.shape[1], self.img.shape[0] // 2]]
 
