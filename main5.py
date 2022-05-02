@@ -12,6 +12,7 @@ from scipy.signal import find_peaks
 
 import scipy.stats as sps
 
+
 class App(QWidget):
     def __init__(self):
         QWidget.__init__(self)
@@ -34,13 +35,9 @@ class App(QWidget):
         self.pushButtonGroup.buttonClicked.connect(self.update_plot)
         self.pushButtonGroup.buttonClicked.connect(self.calc_length)
 
-
-
         self.main_window.show()
 
         self.file_opened = False
-
-
 
     def open_file_show_img_plt(self):
         try:
@@ -133,17 +130,26 @@ class App(QWidget):
         if self.file_opened:
             try:
                 self.ax.clear()
+                self.ax.grid(axis="y")
                 line = np.array(self.Img1.get_line())
                 self.ax.plot(np.divide(np.arange(len(line)), self.pixel_ugl_size), line)
                 self.w_root.label_8.setText("")
+
+                self.ax.set_ylabel("Интенсивность")
+                self.ax.set_xlabel("угл. сек.")
 
                 try:
                     self.find_local_max(line)
                     self.find_local_min(line[int(self.peaks[0]):int(self.peaks[-1])])
                     self.local_min = int(np.mean(self.lows))
-                    self.left1, self.right1 = self.find_left_right(line[0:self.peaks[0]],line[self.peaks[0]:self.local_min],line[self.local_min] + 10,0,self.peaks[0])
-                    self.left2, self.right2 = self.find_left_right(line[self.local_min:self.peaks[1]],line[self.peaks[1]:],line[self.local_min] + 10,self.local_min,self.peaks[1])
-                    self.mean1, self.mean2 = self.find_means(line[self.left1:self.right1], line[self.left2:self.right2], self.left1, self.left2)
+                    self.left1, self.right1 = self.find_left_right(line[0:self.peaks[0]],
+                                                                   line[self.peaks[0]:self.local_min],
+                                                                   line[self.local_min] + 10, 0, self.peaks[0])
+                    self.left2, self.right2 = self.find_left_right(line[self.local_min:self.peaks[1]],
+                                                                   line[self.peaks[1]:], line[self.local_min] + 10,
+                                                                   self.local_min, self.peaks[1])
+                    self.mean1, self.mean2 = self.find_means(line[self.left1:self.right1], line[self.left2:self.right2],
+                                                             self.left1, self.left2)
                     # self.mean1_x = list(line[self.left1:self.right1]).index(self.mean1) + self.left1
                     # self.mean2_x = list(line[self.left2:self.right2]).index(self.mean2) + self.left2
 
@@ -151,25 +157,27 @@ class App(QWidget):
                     # self.ax.plot(list(line).index(mean), np.mean(line), "x")
                     # self.ax.plot(self.right11, line[self.right11], "x")
                     # self.ax.plot(self.left11, line[self.left11], "x")
-                    self.ax.plot(np.divide(self.mean1,self.pixel_ugl_size), self.mean1_y, "x")
-                    self.ax.plot(np.divide(self.mean2,self.pixel_ugl_size), self.mean2_y, "x")
-                    self.ax.plot(np.divide(self.left1,self.pixel_ugl_size), line[self.left1], "x")
-                    self.ax.plot(np.divide(self.left2,self.pixel_ugl_size), line[self.left2], "x")
-                    self.ax.plot(np.divide(self.right2,self.pixel_ugl_size), line[self.right2], "x")
-                    self.ax.plot(np.divide(self.right1,self.pixel_ugl_size), line[self.right1], "x")
+                    self.ax.plot(np.divide(self.mean1, self.pixel_ugl_size), self.mean1_y, "x",color='purple')
+                    self.ax.plot(np.divide(self.mean2, self.pixel_ugl_size), self.mean2_y, "x",color='purple')
+                    self.ax.plot(np.divide(self.left1, self.pixel_ugl_size), line[self.left1], "x",color='black')
+                    self.ax.plot(np.divide(self.left2, self.pixel_ugl_size), line[self.left2], "x",color='black')
+                    self.ax.plot(np.divide(self.right2, self.pixel_ugl_size), line[self.right2], "x",color='black')
+                    self.ax.plot(np.divide(self.right1, self.pixel_ugl_size), line[self.right1], "x",color='black')
 
-                    self.ax.grid(axis="y")
 
-                    self.ax.axvline(np.divide(self.mean1,self.pixel_ugl_size),ymax=self.mean1_y/self.ax.get_ylim()[1], color='green', ls=':', lw=1)
-                    self.ax.axvline(np.divide(self.mean2,self.pixel_ugl_size),ymax=self.mean2_y/self.ax.get_ylim()[1], color='green', ls=':', lw=1)
+                    self.ax.axvline(np.divide(self.mean1, self.pixel_ugl_size),
+                                    ymax=self.mean1_y / self.ax.get_ylim()[1], color='green', ls=':', lw=1)
+                    self.ax.axvline(np.divide(self.mean2, self.pixel_ugl_size),
+                                    ymax=self.mean2_y / self.ax.get_ylim()[1], color='green', ls=':', lw=1)
                     # self.ax.axhline(y=10, xmin=np.divide(self.mean1,self.pixel_ugl_size)/self.ax.get_xlim()[1],xmax=np.divide(self.mean2,self.pixel_ugl_size)/self.ax.get_xlim()[1] ,color='green', ls=':', lw=1)
 
                     # self.ax.plot(self.peaks, line[self.peaks], "x")
-                    self.ax.plot(np.divide(self.local_min,self.pixel_ugl_size), line[int(np.divide(self.local_min,self.pixel_ugl_size))], "x")
+                    self.ax.plot(np.divide(self.local_min, self.pixel_ugl_size),
+                                 line[self.local_min], "x")
                 except Exception as err:
                     self.w_root.label_8.setText("Ошибка нахождения контрольных точек")
+                    self.w_root.label_10.setText("Error")
                     self.w_root.statusbar.showMessage(str(err), 1500)
-
 
                 self.canvas.draw()
             except Exception as err:
@@ -183,13 +191,17 @@ class App(QWidget):
         self.w_root.verticalLayout.addWidget(self.canvas)
         self.ax = self.canvas.figure.subplots()
 
+        self.ax2 = self.ax.twinx()
+        self.ax2.set_ylabel("Уровень")
+
+
     def write_in_file(self):
         fp = open('file.txt', 'w')
         y = self.Img1.get_line()
         x = np.divide(np.arange(len(y)), self.pixel_ugl_size)
         fp.write('Date/Time : ' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + '\n')
         fp.write('Угловой размер пикселя = ' + str(self.pixel_ugl_size) + '\n')
-        fp.write('Расстояние между пятнами = ' + str(self.length) + " угловых секунд"+ '\n\n')
+        fp.write('Расстояние между пятнами = ' + str(self.length) + " угловых секунд" + '\n\n')
         for i in range(len(y)):
             # fp.write(str(x[i]))
             fp.write(f"%{len(str(max(x))) + 1}.6f%{len(str(max(y))) + 10}.5f\n" % (x[i], y[i]))
@@ -199,18 +211,17 @@ class App(QWidget):
     def find_local_max(self, y):
         self.peaks, _ = find_peaks(y, height=50, distance=50, prominence=10, width=40)
 
-    def find_local_min(self,y):
-        y1 = np.multiply(y,-1)
-        self.lows, _ = find_peaks(y1, height=-50,distance=10, prominence=8, width=5)
+    def find_local_min(self, y):
+        y1 = np.multiply(y, -1)
+        self.lows, _ = find_peaks(y1, height=-50, distance=10, prominence=10, width=5)
         self.lows = self.lows + self.peaks[0]
 
-    def find_means(self,y1,y2, plus1, plus2):
+    def find_means(self, y1, y2, plus1, plus2):
 
         self.mean1_y = np.mean(y1)
         self.mean2_y = np.mean(y2)
         # self.left11, self.right11 = self.find_left_right(y1[:int(len(y1)/2)],y1[int(len(y1)/2):],self.mean1_y,plus1, int(len(y1)/2) + plus1)
         # self.left22, self.right22 = self.find_left_right(y2[:int(len(y2)/2)],y2[int(len(y2)/2):],self.mean2_y,plus2, int(len(y2)/2) + plus2)
-
 
         # for i in range(len(y1)):
         #     deltasum = np.sum(y1[i:]) - np.sum(y1[:i])
@@ -225,7 +236,7 @@ class App(QWidget):
         #         break
 
         left_sum = 0
-        right_sum =  np.sum(y1)
+        right_sum = np.sum(y1)
 
         for i in range(y1.size):
             left_sum += y1[i]
@@ -245,28 +256,28 @@ class App(QWidget):
                 mean2 = i + plus2
                 break
 
-
         return mean1, mean2
 
-
-
-    def find_left_right(self,y1, y2, point, plus1, plus2):
+    def find_left_right(self, y1, y2, point, plus1, plus2):
         for i in range(len(y1)):
-            if (y1[i] >= point) and (y1[i-1] <= point):
+            if (y1[i] >= point) and (y1[i - 1] <= point):
                 left_gran = i + plus1
                 break
         for i in range(len(y2)):
-            if (y2[i] <= point) and (y2[i-1] >= point):
+            if (y2[i] <= point) and (y2[i - 1] >= point):
                 right_gran = i - 1 + plus2
         return left_gran, right_gran
 
     def calc_length(self):
-        try:
-            self.length = round(((self.mean2 - self.mean1)/self.pixel_ugl_size),5)
-            self.w_root.label_10.setText(str(self.length) + " угл. сек.")
-        except Exception as err:
-            self.w_root.statusbar.showMessage(str(err), 1500)
+        if self.w_root.label_8.text():
             self.w_root.label_10.setText("Error")
+        else:
+            try:
+                self.length = round(((self.mean2 - self.mean1) / self.pixel_ugl_size), 5)
+                self.w_root.label_10.setText(str(self.length) + " угл. сек.")
+            except Exception as err:
+                self.w_root.statusbar.showMessage(str(err), 1500)
+                self.w_root.label_10.setText("Error")
 
 
 if __name__ == '__main__':
