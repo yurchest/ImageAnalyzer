@@ -1,6 +1,7 @@
 import imutils
 import cv2
 from PyQt5.QtGui import QPixmap, QImage
+import numpy as np
 
 class Img():
     def __init__(self, img_path):
@@ -37,3 +38,12 @@ class Img():
                      img.shape[0], img.shape[1] * 3, QImage.Format_RGB888)
         pix = QPixmap(img)
         return pix
+
+    def get_max_line_bright(self):
+        max_sum = 0
+        for index_line, line in enumerate(self.img):
+            cur_sum = np.sum(line)
+            if cur_sum > max_sum:
+                max_sum = cur_sum
+                index = index_line
+        return index
