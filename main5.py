@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 from PyQt5.QtWidgets import QApplication, QWidget, QFileDialog, QMessageBox, QButtonGroup, QVBoxLayout
 from form import *
+from Settings_class import Settings
 import sys
 from img_class import Img
 import numpy as np
@@ -9,6 +10,8 @@ from datetime import datetime
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
 from scipy.signal import find_peaks
+
+
 
 
 class App(QWidget):
@@ -20,29 +23,63 @@ class App(QWidget):
         self.main_window.setWindowTitle('IMG Analyzer')
         self.init_plot_widget()
 
+        self.file_opened = False
+        self.pixel_ugl_size = 1
+        self.read_data()
+
         self.pushButtonGroup = QButtonGroup(self)
         self.w_root.choose_file_button.clicked.connect(self.open_file_show_img_plt)
         self.w_root.choose_file_button.clicked.connect(self.calc_length)
         self.pushButtonGroup.addButton(self.w_root.find_centre_button)
         self.pushButtonGroup.addButton(self.w_root.line_up_button)
         self.pushButtonGroup.addButton(self.w_root.line_down_button)
-        self.pushButtonGroup.addButton(self.w_root.set_uglsize_button)
         self.pushButtonGroup.addButton(self.w_root.write_file_button)
         self.pushButtonGroup.buttonClicked.connect(self.button_clicked)
         self.pushButtonGroup.buttonClicked.connect(self.update_image)
         self.pushButtonGroup.buttonClicked.connect(self.update_plot)
         self.pushButtonGroup.buttonClicked.connect(self.calc_length)
+        self.w_root.settings_button.clicked.connect(self.open_settings)
+
 
         self.main_window.show()
 
-        self.file_opened = False
+
+
+    def read_data(self):
+        try:
+            with open("sett.txt",'r') as f:
+                data = f.readlines()
+                self.setData(data)
+        except FileNotFoundError:
+            pass
+
+    def setData(self,data):
+        if data[0] != '\n':
+            self.pixel_ugl_size = float(data[0].replace(',', '.'))
+        if data[1] != '\n':
+            self.kontr_len = float(data[1].replace(',', '.'))
+        self.radio_but = data[2].strip()
+        if data[3] != '\n':
+            self.kontr_cent = float(data[3].replace(',', '.'))
+        self.w_root.lineEdit.setText(str(self.pixel_ugl_size).replace('.', ','))
+        if self.file_opened:
+            self.update_plot()
+            self.calc_length()
+
+    def open_settings(self):
+        # try:
+        #     if self.set_form:
+        #         pass
+        # except:
+        self.set_form = Settings()
+        self.set_form.out_signal.connect(self.setData)
+
 
     def open_file_show_img_plt(self):
         try:
             if self.get_file_name():
                 self.Img1 = Img(self.path_img)
-                self.pixel_ugl_size = 1
-                self.w_root.label_7.setText(str(self.pixel_ugl_size))
+                self.w_root.lineEdit.setText(str(self.pixel_ugl_size).replace('.', ','))
                 self.w_root.label_2.setText(self.path_img)
                 self.file_opened = True
                 self.update_image()
@@ -74,18 +111,18 @@ class App(QWidget):
             elif button == self.w_root.line_down_button:
                 self.Img1.line_down()
 
-            elif button == self.w_root.set_uglsize_button:
-                try:
-                    self.pixel_ugl_size = float(self.w_root.lineEdit.text())
-                    self.w_root.label_7.setText(str(self.pixel_ugl_size))
-                except Exception as err:
-                    self.w_root.label_7.setText('ERROR')
-                    error = QMessageBox()
-                    error.setWindowTitle("Ошибка")
-                    error.setText("Ошибка задания углового размера пикселя\n" + str(err))
-                    error.setIcon(QMessageBox.Information)
-                    error.exec()
-                    self.w_root.statusbar.showMessage("Ошибка задания углового размера пикселя", 2000)
+            # elif button == self.w_root.set_uglsize_button:
+            #     try:
+            #         self.pixel_ugl_size = float(self.w_root.lineEdit.text())
+            #         self.w_root.label_7.setText(str(self.pixel_ugl_size))
+            #     except Exception as err:
+            #         self.w_root.label_7.setText('ERROR')
+            #         error = QMessageBox()
+            #         error.setWindowTitle("Ошибка")
+            #         error.setText("Ошибка задания углового размера пикселя\n" + str(err))
+            #         error.setIcon(QMessageBox.Information)
+            #         error.exec()
+            #         self.w_root.statusbar.showMessage("Ошибка задания углового размера пикселя", 2000)
             elif button == self.w_root.write_file_button:
                 try:
                     self.write_in_file()
@@ -95,7 +132,6 @@ class App(QWidget):
                     done.exec()
                     self.w_root.statusbar.showMessage("Готово ", 1500)
                 except Exception as err:
-                    self.w_root.label_7.setText('ERROR')
                     error = QMessageBox()
                     error.setWindowTitle("Ошибка")
                     error.setText("Ошибка записи в файл\n" + str(err))
@@ -120,7 +156,7 @@ class App(QWidget):
 
     def update_image(self):
         if self.file_opened:
-            self.w_root.picture_label.setPixmap(self.Img1.get_pixmap_img())
+            self.w_root.picture_label.setPixmap(self.Img1.get_pixmap_img(500,500))
         else:
             self.w_root.statusbar.showMessage("Файл не открыт ", 1500)
 
@@ -166,6 +202,9 @@ class App(QWidget):
                                     ymax=self.mean1_y / self.ax.get_ylim()[1], color='green', ls=':', lw=1)
                     self.ax.axvline(np.divide(self.mean2, self.pixel_ugl_size),
                                     ymax=self.mean2_y / self.ax.get_ylim()[1], color='green', ls=':', lw=1)
+                    if self.radio_but == "True":
+                        self.ax.axvline(self.kontr_cent - self.kontr_len/2, color='red', ls=':', lw=1)
+                        self.ax.axvline(self.kontr_cent + self.kontr_len/2, color='red', ls=':', lw=1)
                     # self.ax.axhline(y=10, xmin=np.divide(self.mean1,self.pixel_ugl_size)/self.ax.get_xlim()[1],xmax=np.divide(self.mean2,self.pixel_ugl_size)/self.ax.get_xlim()[1] ,color='green', ls=':', lw=1)
 
                     # self.ax.plot(self.peaks, line[self.peaks], "x")

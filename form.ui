@@ -39,7 +39,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Файл диаграммы направленности в формате .bmp</string>
+     <string>Файл снимка пятен (пятна):</string>
     </property>
    </widget>
    <widget class="QPushButton" name="choose_file_button">
@@ -47,14 +47,36 @@
      <rect>
       <x>30</x>
       <y>60</y>
-      <width>151</width>
+      <width>186</width>
       <height>41</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>10</pointsize>
+      <pointsize>-1</pointsize>
+      <weight>75</weight>
+      <italic>false</italic>
+      <bold>true</bold>
      </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">#choose_file_button{   
+ background-color: rgb(140,140,140);
+    border-width: 2px;
+    border-radius: 10px;
+    font: bold 14px;
+    min-width: 10em;
+    padding: 6px;
+}
+	
+#choose_file_button:hover {
+	background-color: rgb(160,160,160);
+}
+
+
+#choose_file_button:pressed {
+	background-color:  rgb(180,180,180);
+}</string>
     </property>
     <property name="text">
      <string>Выберите файл...</string>
@@ -63,16 +85,16 @@
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>180</x>
+      <x>220</x>
       <y>60</y>
-      <width>451</width>
+      <width>411</width>
       <height>41</height>
      </rect>
     </property>
     <property name="font">
      <font>
       <family>Times New Roman</family>
-      <pointsize>12</pointsize>
+      <pointsize>10</pointsize>
       <weight>50</weight>
       <italic>false</italic>
       <bold>false</bold>
@@ -106,8 +128,30 @@
     </property>
     <property name="font">
      <font>
-      <pointsize>10</pointsize>
+      <pointsize>-1</pointsize>
+      <weight>75</weight>
+      <italic>false</italic>
+      <bold>true</bold>
      </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">#write_file_button{   
+ background-color: rgb(140,140,140);
+    border-width: 2px;
+    border-radius: 10px;
+    font: bold 14px;
+    min-width: 10em;
+    padding: 6px;
+}
+	
+#write_file_button:hover {
+	background-color: rgb(160,160,160);
+}
+
+
+#write_file_button:pressed {
+	background-color:  rgb(180,180,180);
+}</string>
     </property>
     <property name="text">
      <string>Вывести в файл</string>
@@ -151,103 +195,6 @@
      <string/>
     </property>
    </widget>
-   <widget class="QLabel" name="label_5">
-    <property name="geometry">
-     <rect>
-      <x>710</x>
-      <y>20</y>
-      <width>591</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Times New Roman</family>
-      <pointsize>14</pointsize>
-      <weight>50</weight>
-      <italic>false</italic>
-      <bold>false</bold>
-     </font>
-    </property>
-    <property name="text">
-     <string>Угловой размер пикселя:</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="lineEdit">
-    <property name="geometry">
-     <rect>
-      <x>940</x>
-      <y>20</y>
-      <width>141</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="set_uglsize_button">
-    <property name="geometry">
-     <rect>
-      <x>940</x>
-      <y>70</y>
-      <width>141</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>10</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>Задать</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_6">
-    <property name="geometry">
-     <rect>
-      <x>710</x>
-      <y>70</y>
-      <width>161</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Times New Roman</family>
-      <pointsize>14</pointsize>
-      <weight>50</weight>
-      <italic>false</italic>
-      <bold>false</bold>
-     </font>
-    </property>
-    <property name="text">
-     <string>Текущее значение :</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_7">
-    <property name="geometry">
-     <rect>
-      <x>870</x>
-      <y>70</y>
-      <width>101</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Times New Roman</family>
-      <pointsize>14</pointsize>
-      <weight>50</weight>
-      <italic>false</italic>
-      <bold>false</bold>
-     </font>
-    </property>
-    <property name="text">
-     <string>НЕТ</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="line_up_button">
     <property name="geometry">
      <rect>
@@ -256,6 +203,24 @@
       <width>51</width>
       <height>61</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">#line_up_button{   
+ background-color: rgb(140,140,140);
+    border-width: 2px;
+    border-radius: 10px;
+    font: bold 14px;
+    padding: 6px;
+}
+	
+#line_up_button:hover {
+	background-color: rgb(160,160,160);
+}
+
+
+#line_up_button:pressed {
+	background-color:  rgb(180,180,180);
+}</string>
     </property>
     <property name="text">
      <string>UP</string>
@@ -278,6 +243,32 @@
       <width>51</width>
       <height>61</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>-1</pointsize>
+      <weight>75</weight>
+      <italic>false</italic>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">#line_down_button{   
+ background-color: rgb(140,140,140);
+    border-width: 2px;
+    border-radius: 10px;
+    font: bold 12px;
+    padding: 6px;
+}
+	
+#line_down_button:hover {
+	background-color: rgb(160,160,160);
+}
+
+
+#line_down_button:pressed {
+	background-color:  rgb(180,180,180);
+}</string>
     </property>
     <property name="text">
      <string>DOWN</string>
@@ -303,8 +294,30 @@
     </property>
     <property name="font">
      <font>
-      <pointsize>10</pointsize>
+      <pointsize>-1</pointsize>
+      <weight>75</weight>
+      <italic>false</italic>
+      <bold>true</bold>
      </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">#find_centre_button{   
+ background-color: rgb(140,140,140);
+    border-width: 2px;
+    border-radius: 10px;
+    font: bold 14px;
+    min-width: 10em;
+    padding: 6px;
+}
+	
+#find_centre_button:hover {
+	background-color: rgb(160,160,160);
+}
+
+
+#find_centre_button:pressed {
+	background-color:  rgb(180,180,180);
+}</string>
     </property>
     <property name="text">
      <string>Определить центр</string>
@@ -388,6 +401,107 @@
     </property>
     <property name="text">
      <string>НЕТ</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="settings_button">
+    <property name="geometry">
+     <rect>
+      <x>290</x>
+      <y>660</y>
+      <width>191</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>-1</pointsize>
+      <weight>75</weight>
+      <italic>false</italic>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">#settings_button{   
+ background-color: rgb(140,140,140);
+    border-width: 2px;
+    border-radius: 10px;
+    font: bold 14px;
+    min-width: 10em;
+    padding: 6px;
+}
+	
+#settings_button:hover {
+	background-color: rgb(160,160,160);
+}
+
+
+#settings_button:pressed {
+	background-color:  rgb(180,180,180);
+}</string>
+    </property>
+    <property name="text">
+     <string>Параметры</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_5">
+    <property name="geometry">
+     <rect>
+      <x>680</x>
+      <y>30</y>
+      <width>221</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Times New Roman</family>
+      <pointsize>12</pointsize>
+      <weight>50</weight>
+      <italic>false</italic>
+      <bold>false</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Угловой размер пикселя:</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lineEdit">
+    <property name="geometry">
+     <rect>
+      <x>910</x>
+      <y>40</y>
+      <width>151</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">    border-radius: 10px;
+border: 2px solid gray;</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+    <property name="clearButtonEnabled">
+     <bool>false</bool>
     </property>
    </widget>
   </widget>

@@ -25,14 +25,17 @@ class Img():
             self.line[0][1] = line
             self.line[1][1] = line
 
-    def get_line(self):
-        return self.img[self.line[0][1]]
+    def get_line(self, index=0):
+        if index == 0:
+            index = self.line[0][1]
+        return self.img[index]
 
 
-    def get_pixmap_img(self):
+    def get_pixmap_img(self,width,height,show_line=True):
         img = cv2.cvtColor(self.img, cv2.COLOR_GRAY2BGR)
-        cv2.line(img, self.line[0], self.line[1], (119, 201, 200), thickness=3)
-        img = imutils.resize(img, width=500, height=500)
+        if show_line:
+            cv2.line(img, self.line[0], self.line[1], (119, 201, 200), thickness=3)
+        img = imutils.resize(img, width=width, height=height)
         img = QImage(img, img.shape[1], \
                      img.shape[0], img.shape[1] * 3, QImage.Format_RGB888)
         pix = QPixmap(img)
@@ -46,3 +49,5 @@ class Img():
                 max_sum = cur_sum
                 index = index_line
         return index
+
+
