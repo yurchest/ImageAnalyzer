@@ -361,9 +361,9 @@ border: 2px solid gray;</string>
   <widget class="QPushButton" name="close_button">
    <property name="geometry">
     <rect>
-     <x>780</x>
+     <x>755</x>
      <y>470</y>
-     <width>186</width>
+     <width>211</width>
      <height>41</height>
     </rect>
    </property>
@@ -395,7 +395,7 @@ border: 2px solid gray;</string>
 }</string>
    </property>
    <property name="text">
-    <string>ЗАКРЫТЬ</string>
+    <string>СОХРАНИТЬ И ЗАКРЫТЬ</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_11">
@@ -422,6 +422,70 @@ color: rgb(255, 0, 0);</string>
    </property>
    <property name="text">
     <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_12">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>190</y>
+     <width>481</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Times New Roman</family>
+     <pointsize>15</pointsize>
+     <weight>50</weight>
+     <italic>false</italic>
+     <bold>false</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(170, 0, 0);</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="close_button_2">
+   <property name="geometry">
+    <rect>
+     <x>630</x>
+     <y>470</y>
+     <width>91</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>-1</pointsize>
+     <weight>75</weight>
+     <italic>false</italic>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#close_button_2{   
+ background-color: rgb(140,140,140);
+    border-width: 2px;
+    border-radius: 10px;
+    font: bold 14px;
+    padding: 6px;
+}
+	
+#close_button_2:hover {
+	background-color: rgb(160,160,160);
+}
+
+
+#close_button_2:pressed {
+	background-color:  rgb(180,180,180);
+}</string>
+   </property>
+   <property name="text">
+    <string>OK</string>
    </property>
   </widget>
  </widget>

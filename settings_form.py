@@ -169,7 +169,7 @@ class Ui_Dialog(object):
         self.label.setText("")
         self.label.setObjectName("label")
         self.close_button = QtWidgets.QPushButton(Dialog)
-        self.close_button.setGeometry(QtCore.QRect(780, 470, 186, 41))
+        self.close_button.setGeometry(QtCore.QRect(755, 470, 211, 41))
         font = QtGui.QFont()
         font.setPointSize(-1)
         font.setBold(True)
@@ -207,6 +207,43 @@ class Ui_Dialog(object):
 "color: rgb(255, 0, 0);")
         self.label_11.setText("")
         self.label_11.setObjectName("label_11")
+        self.label_12 = QtWidgets.QLabel(Dialog)
+        self.label_12.setGeometry(QtCore.QRect(40, 190, 481, 61))
+        font = QtGui.QFont()
+        font.setFamily("Times New Roman")
+        font.setPointSize(15)
+        font.setBold(False)
+        font.setItalic(False)
+        font.setWeight(50)
+        self.label_12.setFont(font)
+        self.label_12.setStyleSheet("color: rgb(170, 0, 0);")
+        self.label_12.setText("")
+        self.label_12.setObjectName("label_12")
+        self.close_button_2 = QtWidgets.QPushButton(Dialog)
+        self.close_button_2.setGeometry(QtCore.QRect(630, 470, 91, 41))
+        font = QtGui.QFont()
+        font.setPointSize(-1)
+        font.setBold(True)
+        font.setItalic(False)
+        font.setWeight(75)
+        self.close_button_2.setFont(font)
+        self.close_button_2.setStyleSheet("#close_button_2{   \n"
+" background-color: rgb(140,140,140);\n"
+"    border-width: 2px;\n"
+"    border-radius: 10px;\n"
+"    font: bold 14px;\n"
+"    padding: 6px;\n"
+"}\n"
+"    \n"
+"#close_button_2:hover {\n"
+"    background-color: rgb(160,160,160);\n"
+"}\n"
+"\n"
+"\n"
+"#close_button_2:pressed {\n"
+"    background-color:  rgb(180,180,180);\n"
+"}")
+        self.close_button_2.setObjectName("close_button_2")
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
@@ -221,4 +258,5 @@ class Ui_Dialog(object):
         self.label_8.setText(_translate("Dialog", "Показывать :"))
         self.label_9.setText(_translate("Dialog", "угл. сек"))
         self.label_10.setText(_translate("Dialog", "Координата центра:"))
-        self.close_button.setText(_translate("Dialog", "ЗАКРЫТЬ"))
+        self.close_button.setText(_translate("Dialog", "СОХРАНИТЬ И ЗАКРЫТЬ"))
+        self.close_button_2.setText(_translate("Dialog", "OK"))
