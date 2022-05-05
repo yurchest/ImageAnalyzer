@@ -5,16 +5,11 @@ from PyQt5.QtCore import pyqtSignal, QObject, QTimer
 from PyQt5.QtGui import QPixmap, QImage
 from settings_form import *
 from img_class import Img
-import cv2
-import imutils
-
 
 
 class Settings(QWidget):
     data_signal = pyqtSignal(list)
     set_mainwindow_active = pyqtSignal(bool)
-
-
 
     def __init__(self):
         QWidget.__init__(self)
@@ -26,8 +21,6 @@ class Settings(QWidget):
         self.file_opened = False
         self.read_from_cfg_file_set_values()
 
-
-
         self.w_root.lineEdit.setValidator(QtGui.QDoubleValidator())
         self.w_root.lineEdit_2.setValidator(QtGui.QDoubleValidator())
 
@@ -36,16 +29,14 @@ class Settings(QWidget):
 
         self.w_root.lineEdit.textChanged.connect(self.set_kontr_centr)
 
-
         self.w_root.close_button.clicked.connect(self.apply_close)
         self.w_root.close_button_2.clicked.connect(self.close_without_save)
 
         # self.w2.show()
 
-
     def read_from_cfg_file_set_values(self):
         if os.path.isfile("cfg/sett.txt"):
-            with open("cfg/sett.txt",'r') as f:
+            with open("cfg/sett.txt", 'r') as f:
                 data = f.readlines()
                 if data[0] != "\n": self.ugl_size_pixel = float(data[0])
                 if data[1] != "\n": self.kontr_ugl_length = float(data[1])
@@ -69,17 +60,12 @@ class Settings(QWidget):
                 os.mkdir('cfg')
             except:
                 pass
-            self.write_to_cfg_file(['1','1','False','','',''])
+            self.write_to_cfg_file(['1', '1', 'False', '', '', ''])
 
-
-
-
-    def write_to_cfg_file(self,list):
+    def write_to_cfg_file(self, list):
         with open("cfg/sett.txt", 'w') as f:
             for i in range(len(list)):
                 f.write(str(list[i]) + '\n')
-
-
 
     def get_data_to_transfer(self):
         if self.w_root.lineEdit.text().strip() != "" and self.w_root.lineEdit_2.text().strip() != "":
@@ -101,7 +87,6 @@ class Settings(QWidget):
 
         return data
 
-
     def apply_close(self):
         data_tranfer = self.get_data_to_transfer()
         if (data_tranfer == 0):
@@ -119,11 +104,11 @@ class Settings(QWidget):
 
     def set_close_error(self):
         self.w_root.label_12.setText("Задайте корректные значения перед сохранением")
-        timer = QtCore.QTimer()
-        timer.setSingleShot(True)
-        timer.setInterval(3000)
-        timer.timeout.connect(lambda: self.w_root.label_12.setText(""))
-        timer.start()
+        self.timer = QTimer()
+        self.timer.setSingleShot(True)
+        self.timer.setInterval(2000)
+        self.timer.timeout.connect(lambda: self.w_root.label_12.setText(""))
+        self.timer.start()
 
     def open_file_show_img(self):
         try:
@@ -143,10 +128,9 @@ class Settings(QWidget):
 
     def update_image(self):
         if self.file_opened:
-            self.w_root.picture_label.setPixmap(self.Img1.get_pixmap_img(350, 200,  show_line=False))
+            self.w_root.picture_label.setPixmap(self.Img1.get_pixmap_img(350, 200, show_line=False))
         else:
             pass
-
 
     def get_file_name(self):
         options = QFileDialog.Options()
@@ -176,4 +160,3 @@ class Settings(QWidget):
 
     def calculate_epr(self):
         self.epr_kontr = self.max_in_line
-

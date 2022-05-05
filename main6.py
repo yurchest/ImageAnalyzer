@@ -33,7 +33,6 @@ class App(QWidget):
 
         self.file_opened = False
 
-
         self.pushButtonGroup = QButtonGroup(self)
         self.pushButtonGroup2 = QButtonGroup(self)
         self.w_root.choose_file_button.clicked.connect(self.open_file_create_img)
@@ -71,7 +70,6 @@ class App(QWidget):
             # self.w_root.radioButton.setChecked(bool(data[2].strip()))
         else:
             self.w_root.statusbar.showMessage("Конфигурационный файл не найден ", 1500)
-
 
     def open_settings(self):
         self.main_window.setEnabled(False)
@@ -111,6 +109,7 @@ class App(QWidget):
     def update_plot(self):
         if self.file_opened:
             try:
+
                 self.ax.clear()
                 self.ax.grid(axis="y")
                 line = np.array(self.Img1.get_line())
@@ -123,17 +122,18 @@ class App(QWidget):
                     self.local_min = int(np.mean(self.lows))
                     self.left1, self.right1 = self.find_left_right(line[0:self.peaks[0]],
                                                                    line[self.peaks[0]:self.local_min],
-                                                                   line[self.local_min] + 15, 0, self.peaks[0])
+                                                                   line[self.local_min] + 0.2 * line[self.peaks[0]], 0,
+                                                                   self.peaks[0])
                     self.left2, self.right2 = self.find_left_right(line[self.local_min:self.peaks[1]],
-                                                                   line[self.peaks[1]:], line[self.local_min] + 15,
+                                                                   line[self.peaks[1]:],
+                                                                   line[self.local_min] + 0.2 * line[self.peaks[0]],
                                                                    self.local_min, self.peaks[1])
                     self.mean1, self.mean2 = self.find_means(line[self.left1:self.right1], line[self.left2:self.right2],
                                                              self.left1, self.left2)
-                    epr1,epr2 = self.get_eprs(line[int(self.mean1)], line[int(self.mean2)])
+                    epr1, epr2 = self.get_eprs(line[int(self.mean1)], line[int(self.mean2)])
 
                     self.w_root.lineEdit_4.setText(str(epr1) + " * 10**7")
                     self.w_root.lineEdit_5.setText(str(epr2) + " * 10**7")
-
 
                     # self.ax.plot(sps.norm.pdf(np.arange(len(line)),loc=list(line).index(mean), scale=np.std(line)))
                     # self.ax.plot(list(line).index(mean), np.mean(line), "x")
@@ -161,9 +161,13 @@ class App(QWidget):
                     self.w_root.statusbar.showMessage(str(err), 1500)
                 try:
                     if self.show_kontr_ugl_length == "True":
-                        self.ax.axvline(float(self.kontr_centr/self.pixel_ugl_size) - self.kontr_ugl_length / 2, color='red', ls=':', lw=1)
-                        self.ax.axvline(float(self.kontr_centr/self.pixel_ugl_size) + self.kontr_ugl_length / 2, color='red', ls=':', lw=1)
-                        epr3, epr4 = self.get_eprs(line[int(float(self.kontr_centr) - self.kontr_ugl_length*self.pixel_ugl_size / 2)], line[int(float(self.kontr_centr) + self.kontr_ugl_length*self.pixel_ugl_size / 2)])
+                        self.ax.axvline(float(self.kontr_centr / self.pixel_ugl_size) - self.kontr_ugl_length / 2,
+                                        color='red', ls=':', lw=1)
+                        self.ax.axvline(float(self.kontr_centr / self.pixel_ugl_size) + self.kontr_ugl_length / 2,
+                                        color='red', ls=':', lw=1)
+                        epr3, epr4 = self.get_eprs(
+                            line[int(float(self.kontr_centr) - self.kontr_ugl_length * self.pixel_ugl_size / 2)],
+                            line[int(float(self.kontr_centr) + self.kontr_ugl_length * self.pixel_ugl_size / 2)])
                         self.w_root.lineEdit_8.setText(str(epr3) + " * 10**7")
                         self.w_root.lineEdit_9.setText(str(epr4) + " * 10**7")
                     else:
@@ -234,7 +238,7 @@ class App(QWidget):
         self.ax2 = self.ax.twinx()
         self.ax2.set_ylabel("Уровень")
 
-    def calculate_update_all(self,img=True, plot=True, setlen=True):
+    def calculate_update_all(self, img=True, plot=True, setlen=True):
         if self.file_opened:
             if img: self.update_image()
             if plot: self.update_plot()
@@ -288,20 +292,24 @@ class App(QWidget):
     def on_release(self):
         self.calculate_update_all()
         self.timer.stop()
+        self.count = 0
 
     def on_press(self, button):
+        self.count = 0
         self.current_line_button = button
+        self.button_clicked(button)
+        self.calculate_update_all()
         self.timer.start(50)
 
     def while_pressed(self):
-        self.button_clicked(self.current_line_button)
-        self.calculate_update_all(plot=False, setlen=False)
+        if self.count > 2:
+            self.button_clicked(self.current_line_button)
+            self.calculate_update_all()
+            # self.calculate_update_all(plot=False, setlen=False)
+        self.count += 1
 
     def get_eprs(self, mean1, mean2):
         return mean1, mean2
-
-
-
 
 
 if __name__ == '__main__':
