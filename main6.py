@@ -13,6 +13,11 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
 from scipy.signal import find_peaks
 
+from scipy.stats import boxcox
+from scipy.special import boxcox1p
+from scipy.stats import norm
+import scipy.stats
+
 
 class App(QWidget):
     def __init__(self):
@@ -93,6 +98,7 @@ class App(QWidget):
     def open_file_create_img(self):
         if self.get_file_name():
             self.Img1 = Img(self.path_img)
+            self.Img1.set_line(self.Img1.get_max_line_bright())
             self.w_root.label_2.setText(self.path_img)
             self.file_opened = True
         else:
@@ -106,6 +112,13 @@ class App(QWidget):
         if self.path_img:
             return self.path_img
 
+    def get_indices(self, lst, el):
+        list = []
+        for i in range(len(lst)):
+            if lst[i] == el:
+                list.append(i)
+        return list
+
     def update_plot(self):
         if self.file_opened:
             try:
@@ -114,6 +127,13 @@ class App(QWidget):
                 self.ax.grid(axis="y")
                 line = np.array(self.Img1.get_line())
                 self.ax.plot(np.divide(np.arange(len(line)), self.pixel_ugl_size), line)
+                # ## Показывать привидение к нормальному ------------------
+                # line_norm = np.multiply(list(boxcox1p(list(line), -0.2)), 8)
+                # for i in range(line_norm.size):
+                #     if line_norm[i] < 0.4*max(line_norm):
+                #         line_norm[i] = 0
+                # self.ax.plot(np.divide(np.arange(len(line_norm)), self.pixel_ugl_size), line_norm, ls='-')
+                # ## ------------------------------------------------------
                 self.w_root.label_8.setText("")
 
                 try:
@@ -122,11 +142,11 @@ class App(QWidget):
                     self.local_min = int(np.mean(self.lows))
                     self.left1, self.right1 = self.find_left_right(line[0:self.peaks[0]],
                                                                    line[self.peaks[0]:self.local_min],
-                                                                   line[self.local_min] + 0.2 * line[self.peaks[0]], 0,
+                                                                   line[self.local_min] + 0.15 * line[self.peaks[0]], 0,
                                                                    self.peaks[0])
                     self.left2, self.right2 = self.find_left_right(line[self.local_min:self.peaks[1]],
                                                                    line[self.peaks[1]:],
-                                                                   line[self.local_min] + 0.2 * line[self.peaks[0]],
+                                                                   line[self.local_min] + 0.15 * line[self.peaks[0]],
                                                                    self.local_min, self.peaks[1])
                     self.mean1, self.mean2 = self.find_means(line[self.left1:self.right1], line[self.left2:self.right2],
                                                              self.left1, self.left2)
@@ -139,6 +159,19 @@ class App(QWidget):
                     # self.ax.plot(list(line).index(mean), np.mean(line), "x")
                     # self.ax.plot(self.right11, line[self.right11], "x")
                     # self.ax.plot(self.left11, line[self.left11], "x")
+
+                    self.ax.plot(np.divide(np.arange(len(line)), self.pixel_ugl_size), np.multiply(
+                        norm.pdf(np.divide(np.arange(len(line)), self.pixel_ugl_size),
+                                 loc=self.mean1 / self.pixel_ugl_size,
+                                 scale=np.std(line[self.left1:self.right1]) / self.pixel_ugl_size),
+                        self.mean1_y * 100 / self.pixel_ugl_size), ls=':', color="orange")
+
+                    self.ax.plot(np.divide(np.arange(len(line)), self.pixel_ugl_size), np.multiply(
+                        norm.pdf(np.divide(np.arange(len(line)), self.pixel_ugl_size),
+                                 loc=self.mean2 / self.pixel_ugl_size,
+                                 scale=np.std(line[self.left2:self.right2]) / self.pixel_ugl_size),
+                        self.mean2_y * 100 / self.pixel_ugl_size), ls=':', color ="orange")
+
                     self.ax.plot(np.divide(self.mean1, self.pixel_ugl_size), self.mean1_y, "x", color='purple')
                     self.ax.plot(np.divide(self.mean2, self.pixel_ugl_size), self.mean2_y, "x", color='purple')
                     self.ax.plot(np.divide(self.left1, self.pixel_ugl_size), line[self.left1], "x", color='black')
@@ -207,7 +240,29 @@ class App(QWidget):
             if (right_sum - left_sum) < 500:
                 mean2 = i + plus2
                 break
+        print(mean2 - mean1)
+        p = []
+        for el in y1:
+            p += self.get_indices(list(y1), el)
+        mean1 = np.mean(p) + plus1
 
+        x = []
+        for el in p:
+            x.append(len(self.get_indices(list(p), el)))
+
+        print(max(x) / len(p))
+
+        # plt.clf()
+        # plt.plot(x)
+        # plt.show()
+
+        p = []
+        for el in y2:
+            p += self.get_indices(list(y1), el)
+        mean2 = np.mean(p) + plus2
+
+        print(mean2 - mean1)
+        print("------------------")
         return mean1, mean2
 
     def find_left_right(self, y1, y2, point, plus1, plus2):
