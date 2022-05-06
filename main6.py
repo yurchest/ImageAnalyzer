@@ -160,11 +160,15 @@ class App(QWidget):
                     # self.ax.plot(self.right11, line[self.right11], "x")
                     # self.ax.plot(self.left11, line[self.left11], "x")
 
+                    print(max(norm.pdf(np.divide(np.arange(len(line)), self.pixel_ugl_size),
+                                 loc=self.mean1 / self.pixel_ugl_size,
+                                 scale=np.std(line[self.left1:self.right1]) / self.pixel_ugl_size)))
+
                     self.ax.plot(np.divide(np.arange(len(line)), self.pixel_ugl_size), np.multiply(
                         norm.pdf(np.divide(np.arange(len(line)), self.pixel_ugl_size),
                                  loc=self.mean1 / self.pixel_ugl_size,
                                  scale=np.std(line[self.left1:self.right1]) / self.pixel_ugl_size),
-                        self.mean1_y * 100 / self.pixel_ugl_size), ls=':', color="orange")
+                        self.mean1_y*100/ self.pixel_ugl_size), ls=':', color="orange")
 
                     self.ax.plot(np.divide(np.arange(len(line)), self.pixel_ugl_size), np.multiply(
                         norm.pdf(np.divide(np.arange(len(line)), self.pixel_ugl_size),
@@ -250,11 +254,10 @@ class App(QWidget):
         for el in p:
             x.append(len(self.get_indices(list(p), el)))
 
-        print(max(x) / len(p))
 
-        # plt.clf()
-        # plt.plot(x)
-        # plt.show()
+        plt.clf()
+        plt.plot(y1)
+        plt.show()
 
         p = []
         for el in y2:
@@ -262,6 +265,7 @@ class App(QWidget):
         mean2 = np.mean(p) + plus2
 
         print(mean2 - mean1)
+        print(self.mean1_y * 100/sum(p))
         print("------------------")
         return mean1, mean2
 
