@@ -47,6 +47,9 @@ class App(QWidget):
         self.pushButtonGroup2.addButton(self.w_root.line_down_button)
         self.pushButtonGroup.addButton(self.w_root.write_file_button)
 
+        self.w_root.radioButton.toggled.connect(lambda: self.calculate_update_all())
+        self.w_root.radioButton_2.toggled.connect(lambda: self.calculate_update_all())
+
         self.pushButtonGroup.buttonClicked.connect(self.button_clicked)
         self.pushButtonGroup.buttonClicked.connect(lambda: self.calculate_update_all())
 
@@ -68,6 +71,7 @@ class App(QWidget):
                 if data[2] != "\n": self.show_kontr_ugl_length = data[2].strip()
                 if data[4] != "\n": self.kontr_centr = float(data[4].strip())
                 if data[5] != "\n": self.epr_kontr = float(data[5].strip())
+
 
             self.w_root.lineEdit.setText(data[0].strip().replace('.', ','))
             if data[5] != "\n": self.w_root.lineEdit_2.setText(str(data[5].strip().replace('.', ',') + ' * 10**7'))
@@ -149,7 +153,7 @@ class App(QWidget):
                                                                    line[self.local_min] + 0.15 * line[self.peaks[0]],
                                                                    self.local_min, self.peaks[1])
                     self.mean1, self.mean2 = self.find_means(line[self.left1:self.right1], line[self.left2:self.right2],
-                                                             self.left1, self.left2)
+                                                             self.left1, self.left2,line)
                     epr1, epr2 = self.get_eprs(line[int(self.mean1)], line[int(self.mean2)])
 
                     self.w_root.lineEdit_4.setText(str(epr1) + " * 10**7")
@@ -160,21 +164,19 @@ class App(QWidget):
                     # self.ax.plot(self.right11, line[self.right11], "x")
                     # self.ax.plot(self.left11, line[self.left11], "x")
 
-                    print(max(norm.pdf(np.divide(np.arange(len(line)), self.pixel_ugl_size),
-                                 loc=self.mean1 / self.pixel_ugl_size,
-                                 scale=np.std(line[self.left1:self.right1]) / self.pixel_ugl_size)))
 
-                    self.ax.plot(np.divide(np.arange(len(line)), self.pixel_ugl_size), np.multiply(
-                        norm.pdf(np.divide(np.arange(len(line)), self.pixel_ugl_size),
-                                 loc=self.mean1 / self.pixel_ugl_size,
-                                 scale=np.std(line[self.left1:self.right1]) / self.pixel_ugl_size),
-                        self.mean1_y*100/ self.pixel_ugl_size), ls=':', color="orange")
+                    if self.w_root.radioButton_2.isChecked():
+                        self.ax.plot(np.divide(np.arange(len(line)), self.pixel_ugl_size), np.multiply(
+                            norm.pdf(np.divide(np.arange(len(line)), self.pixel_ugl_size),
+                                     loc=self.mean1 / self.pixel_ugl_size,
+                                     scale=np.std(line[self.left1:self.right1]) / self.pixel_ugl_size),
+                            self.mean1_y*100/ self.pixel_ugl_size), ls=':', color="orange")
 
-                    self.ax.plot(np.divide(np.arange(len(line)), self.pixel_ugl_size), np.multiply(
-                        norm.pdf(np.divide(np.arange(len(line)), self.pixel_ugl_size),
-                                 loc=self.mean2 / self.pixel_ugl_size,
-                                 scale=np.std(line[self.left2:self.right2]) / self.pixel_ugl_size),
-                        self.mean2_y * 100 / self.pixel_ugl_size), ls=':', color ="orange")
+                        self.ax.plot(np.divide(np.arange(len(line)), self.pixel_ugl_size), np.multiply(
+                            norm.pdf(np.divide(np.arange(len(line)), self.pixel_ugl_size),
+                                     loc=self.mean2 / self.pixel_ugl_size,
+                                     scale=np.std(line[self.left2:self.right2]) / self.pixel_ugl_size),
+                            self.mean2_y * 100 / self.pixel_ugl_size), ls=':', color ="orange")
 
                     self.ax.plot(np.divide(self.mean1, self.pixel_ugl_size), self.mean1_y, "x", color='purple')
                     self.ax.plot(np.divide(self.mean2, self.pixel_ugl_size), self.mean2_y, "x", color='purple')
@@ -220,53 +222,63 @@ class App(QWidget):
         else:
             self.w_root.statusbar.showMessage("Файл не открыт ", 1500)
 
-    def find_means(self, y1, y2, plus1, plus2):
+    def find_means(self, y1, y2, plus1, plus2, line):
+        if self.w_root.radioButton.isChecked() == False:
+            self.mean1_y = np.mean(y1)
+            self.mean2_y = np.mean(y2)
+            ### 1-й способ: сумма слева == сумма справа ------------------------
+            # left_sum = 0
+            # right_sum = np.sum(y1)
+            #
+            # for i in range(y1.size):
+            #     left_sum += y1[i]
+            #     right_sum -= y1[i]
+            #     if (right_sum - left_sum) < 500:
+            #         mean1 = i + plus1
+            #         break
+            #
+            # left_sum = 0
+            # right_sum = np.sum(y2)
+            #
+            # for i in range(y2.size):
+            #     left_sum += y2[i]
+            #     right_sum -= y2[i]
+            #     if (right_sum - left_sum) < 500:
+            #         mean2 = i + plus2
+            #         break
+            # print(mean1)
+            ## ---------------------------------------------------------
+            ## 2-й способ: поиск среднего из координат
+            # p = []
+            # for el in y1:
+            #     p += self.get_indices(list(y1), el)
+            # mean1 = np.mean(p) + plus1
+            #
+            # p = []
+            # for el in y2:
+            #     p += self.get_indices(list(y1), el)
+            # mean2 = np.mean(p) + plus2
+            #
+            # print(mean1)
 
-        self.mean1_y = np.mean(y1)
-        self.mean2_y = np.mean(y2)
+            ## -------------------------------------------------------
+            ## 3-й способ:
 
-        left_sum = 0
-        right_sum = np.sum(y1)
+            summ =0
+            for i in range(y1.size):
+                summ += i*y1[i]
+            mean1 = summ/np.sum(y1) + plus1
 
-        for i in range(y1.size):
-            left_sum += y1[i]
-            right_sum -= y1[i]
-            if (right_sum - left_sum) < 500:
-                mean1 = i + plus1
-                break
+            summ =0
+            for i in range(y2.size):
+                summ += i*y2[i]
+            mean2 = summ/np.sum(y2) + plus2
+            # print("KOORD =",mean1)
 
-        left_sum = 0
-        right_sum = np.sum(y2)
-
-        for i in range(y2.size):
-            left_sum += y2[i]
-            right_sum -= y2[i]
-            if (right_sum - left_sum) < 500:
-                mean2 = i + plus2
-                break
-        print(mean2 - mean1)
-        p = []
-        for el in y1:
-            p += self.get_indices(list(y1), el)
-        mean1 = np.mean(p) + plus1
-
-        x = []
-        for el in p:
-            x.append(len(self.get_indices(list(p), el)))
-
-
-        plt.clf()
-        plt.plot(y1)
-        plt.show()
-
-        p = []
-        for el in y2:
-            p += self.get_indices(list(y1), el)
-        mean2 = np.mean(p) + plus2
-
-        print(mean2 - mean1)
-        print(self.mean1_y * 100/sum(p))
-        print("------------------")
+            # print("------------------")
+        else:
+            mean1, mean2 = self.peaks[0], self.peaks[1]
+            self.mean1_y, self.mean2_y = line[mean1], line[mean2]
         return mean1, mean2
 
     def find_left_right(self, y1, y2, point, plus1, plus2):

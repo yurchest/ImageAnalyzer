@@ -47,7 +47,10 @@ class Settings(QWidget):
 
             self.w_root.lineEdit.setText(data[0].strip().replace('.', ','))
             self.w_root.lineEdit_2.setText(data[1].strip().replace('.', ','))
-            self.w_root.radioButton.setChecked(bool(data[2].strip()))
+            if data[2] == "False":
+                self.w_root.radioButton.setChecked(False)
+            elif data[2] == "True":
+                self.w_root.radioButton.setChecked(True)
             try:
                 self.Img1 = Img(self.path_img)
                 self.w_root.picture_label.setPixmap(self.Img1.get_pixmap_img(350, 200, show_line=False))
