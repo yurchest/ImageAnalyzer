@@ -239,7 +239,6 @@ class App(QWidget):
                     mean2 = i + plus2
                     break
         elif self.w_root.radioButton.isChecked():
-            print(self.pixel_ugl_size)
             p = np.polyfit(np.arange(line.size), line, 50)
             yp = np.polyval(p, np.arange(line.size))
             peaks = self.find_local_max(yp)
@@ -248,7 +247,6 @@ class App(QWidget):
 
             mean1 = peaks[0]
             mean2 = peaks[1]
-            print(mean2)
             self.mean1_y = yp[mean1]
             self.mean2_y = yp[mean2]
 
@@ -354,7 +352,6 @@ class App(QWidget):
             for i in range(len(y)):
                 # fp.write(str(x[i]))
                 fp.write(f"%{len(str(max(x))) + 1}.6f%{len(str(max(y))) + 10}.5f\n" % (x[i], y[i]))
-                # print(x[i])
             fp.close()
             done = QMessageBox()
             done.setWindowTitle("Информация")
