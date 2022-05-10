@@ -243,13 +243,38 @@ class App(QWidget):
             yp = np.polyval(p, np.arange(line.size))
             peaks = self.find_local_max(yp)
             self.ax.plot(np.divide(np.arange(line.size), self.pixel_ugl_size), yp, ls=":", lw=2, color = "purple")
-
+            peaks = self.find_local_max(yp)
 
             mean1 = peaks[0]
             mean2 = peaks[1]
             self.mean1_y = yp[mean1]
             self.mean2_y = yp[mean2]
 
+            from scipy.optimize import curve_fit
+
+
+            # pars1, cov = curve_fit(f=self.Gauss, xdata=np.arange(y1.size), ydata=y1, p0=[100, 20, 20], bounds=(-np.inf, np.inf))
+            # pars2, cov = curve_fit(f=self.Gauss, xdata=np.arange(y2.size), ydata=y2, p0=[100, 20, 20], bounds=(-np.inf, np.inf))
+            # print(pars1)
+            # print(pars2)
+            # # self.ax.clear()
+            # fit_y1 = self.Gauss(np.arange(y1.size), pars1[0], pars1[1], pars1[2])
+            # fit_y2 = self.Gauss(np.arange(y2.size), pars2[0], pars2[1], pars2[2])
+            # self.ax.plot(np.divide(np.arange(y1.size) + plus1, self.pixel_ugl_size),fit_y1, ls=":", lw=2, color="purple")
+            # self.ax.plot(np.divide(np.arange(y2.size) + plus2, self.pixel_ugl_size),fit_y2, ls=":", lw=2, color="purple")
+            #
+            # mean1 = pars1[1] + plus1
+            # mean2 = pars2[1] + plus2
+            #
+            # self.mean1_y = np.max(fit_y1)
+            # self.mean2_y = np.max(fit_y2)
+
+            # pars3, cov = curve_fit(f=self.sin_func, xdata=np.arange(line.size), ydata=line, p0=[100, 100, 100, 100, 100, 100],
+            #                        bounds=(-np.inf, np.inf))
+            # print(pars3)
+            # fit_y = self.sin_func(np.arange(line.size), pars3[0], pars3[1], pars3[2], pars3[3], pars3[4], pars3[5])
+            # self.ax.plot(np.divide(np.arange(line.size), self.pixel_ugl_size), fit_y, ls=":", lw=2,
+            #              color="purple")
         elif self.w_root.radioButton_4.isChecked():
             mean1, mean2 = self.peaks[0], self.peaks[1]
             self.mean1_y, self.mean2_y = line[mean1], line[mean2]
@@ -285,6 +310,12 @@ class App(QWidget):
 
 
         return mean1, mean2
+
+    def Gauss(self,x, a, b,c):
+        return a*np.exp(-np.power(x - b, 2)/(2*np.power(c, 2)))
+
+    def sin_func(self,x, a, b, c, d,e ,f):
+            return (a * x) + (b * x ** 2) + (c * x ** 3) + (d * x ** 4) + (e * x ** 5) + f
 
     def find_left_right(self, y1, y2, point, plus1, plus2):
         for i in range(y1.size):
