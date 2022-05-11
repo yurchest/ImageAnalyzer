@@ -43,7 +43,7 @@ class Settings(QWidget):
                 if data[2] != "\n": self.show_kontr_ugl_length = bool(data[2])
                 if data[3] != "\n": self.path_img = data[3].strip()
                 if data[4] != "\n": self.kontr_centr = float(data[4].strip())
-                if data[5] != "\n": self.epr_kontr = float(data[5].strip())
+                if data[5] != "\n": self.bright_kontr = float(data[5].strip())
 
             self.w_root.lineEdit.setText(data[0].strip().replace('.', ','))
             self.w_root.lineEdit_2.setText(data[1].strip().replace('.', ','))
@@ -77,14 +77,14 @@ class Settings(QWidget):
             show_kontr_ugl_length = self.w_root.radioButton.isChecked()
             self.find_centre_write_lineinfile()
             try:
-                epr_kontr = self.epr_kontr
+                bright_kontr = self.bright_kontr
                 kontr_centr = self.kontr_centr
                 path = self.path_img
             except:
-                epr_kontr = ""
+                bright_kontr = ""
                 path = ""
                 kontr_centr = ""
-            data = [ugl_size_pixel, kontr_ugl_length, show_kontr_ugl_length, path, kontr_centr, epr_kontr]
+            data = [ugl_size_pixel, kontr_ugl_length, show_kontr_ugl_length, path, kontr_centr, bright_kontr]
         else:
             return 0
 
@@ -136,10 +136,8 @@ class Settings(QWidget):
             pass
 
     def get_file_name(self):
-        options = QFileDialog.Options()
-        options |= QFileDialog.DontUseNativeDialog
         self.path_img, _ = QFileDialog.getOpenFileName(self, "Выберите файл", "./",
-                                                       "Image Files(*.bmp);;All Files (*)", options=options)
+                                                       "Image Files(*.bmp);;All Files (*)")
         if self.path_img:
             return self.path_img
 
@@ -162,4 +160,4 @@ class Settings(QWidget):
             self.w_root.label.setText("Неизвестно")
 
     def calculate_epr(self):
-        self.epr_kontr = self.max_in_line
+        self.bright_kontr = self.max_in_line

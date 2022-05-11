@@ -1,7 +1,8 @@
-/venv_win
+
 /dist/
 /build
 /.idea
-/venv
-/venv2/
-/venv3.8/
+/venv_hp1
+/venv_PC_Work
+/.vscode
+/cfg
