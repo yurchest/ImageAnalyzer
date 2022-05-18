@@ -55,7 +55,7 @@ class App(QWidget):
         self.w_root.radioButton_3.toggled.connect(lambda: self.calculate_update_all())
         self.w_root.radioButton_4.toggled.connect(lambda: self.calculate_update_all())
         self.w_root.radioButton_5.toggled.connect(lambda: self.calculate_update_all())
-        self.w_root.radioButton_6.toggled.connect(lambda: self.calculate_update_all())
+
 
         self.pushButtonGroup.buttonClicked.connect(self.button_clicked)
         self.pushButtonGroup.buttonClicked.connect(lambda: self.calculate_update_all())
@@ -128,14 +128,6 @@ class App(QWidget):
             return self.path_img
 
 
-
-    def get_indices(self, lst, el):
-        list = []
-        for i in range(len(lst)):
-            if lst[i] == el:
-                list.append(i)
-        return list
-
     def update_plot(self):
         if self.file_opened:
             try:
@@ -143,7 +135,7 @@ class App(QWidget):
                 self.ax.clear()
                 self.ax.grid(axis="y")
                 line = np.array(self.Img1.get_line())
-                self.ax.plot(np.divide(np.arange(len(line)), self.pixel_ugl_size), line)
+                self.ax.plot(np.divide(np.arange(line.size), self.pixel_ugl_size), line)
                 # ## Показывать привидение к нормальному ------------------
                 # line_norm = np.multiply(list(boxcox1p(list(line), -0.2)), 8)
                 # for i in range(line_norm.size):
@@ -238,26 +230,17 @@ class App(QWidget):
         if self.w_root.radioButton_3.isChecked():
             self.mean1_y = np.mean(y1)
             self.mean2_y = np.mean(y2)
+
             ### 1-й способ: сумма слева == сумма справа ------------------------
-            left_sum = 0
-            right_sum = np.sum(y1)
 
-            for i in range(y1.size):
-                left_sum += y1[i]
-                right_sum -= y1[i]
-                if (right_sum - left_sum) < 500:
-                    mean1 = i + plus1
-                    break
+            c1 = y1.cumsum()
+            c2 = y1[::-1].cumsum()[::-1]
+            mean1 = np.argmin(np.abs(c1 - c2)) + plus1
+            c1 = y2.cumsum()
+            c2 = y2[::-1].cumsum()[::-1]
+            mean2 = np.argmin(np.abs(c1 - c2)) + plus2
 
-            left_sum = 0
-            right_sum = np.sum(y2)
 
-            for i in range(y2.size):
-                left_sum += y2[i]
-                right_sum -= y2[i]
-                if (right_sum - left_sum) < 500:
-                    mean2 = i + plus2
-                    break
         elif self.w_root.radioButton.isChecked():
 
             # p = np.polyfit(np.arange(line.size), line, 50)
@@ -305,30 +288,9 @@ class App(QWidget):
             ## 3-й способ:
             self.mean1_y = np.mean(y1)
             self.mean2_y = np.mean(y2)
-            summ =0
-            for i in range(y1.size):
-                summ += i*y1[i]
-            mean1 = summ/np.sum(y1) + plus1
 
-            summ =0
-            for i in range(y2.size):
-                summ += i*y2[i]
-            mean2 = summ/np.sum(y2) + plus2
-
-        elif self.w_root.radioButton_6.isChecked():
-            self.mean1_y = np.mean(y1)
-            self.mean2_y = np.mean(y2)
-            # 2-й способ: поиск среднего из координат
-            p = []
-            for el in y1:
-                p += self.get_indices(list(y1), el)
-            mean1 = np.mean(p) + plus1
-
-            p = []
-            for el in y2:
-                p += self.get_indices(list(y1), el)
-            mean2 = np.mean(p) + plus2
-
+            mean1 = np.sum(np.arange(y1.size) * y1) / np.sum(y1) + plus1
+            mean2 = np.sum(np.arange(y2.size) * y2) / np.sum(y2) + plus2
 
         return mean1, mean2
 
@@ -339,13 +301,8 @@ class App(QWidget):
             return (a * x) + (b * x ** 2) + (c * x ** 3) + (d * x ** 4) + (e * x ** 5) + f
 
     def find_left_right(self, y1, y2, point, plus1, plus2):
-        for i in range(y1.size):
-            if (y1[i] >= point) and (y1[i - 1] <= point):
-                left_gran = i + plus1
-                break
-        for i in range(y2.size):
-            if (y2[i] <= point) and (y2[i - 1] >= point):
-                right_gran = i - 1 + plus2
+        left_gran = np.argmax(y1 > point) + plus1 - 1
+        right_gran = np.argmax (y2 < point) + plus2
         return left_gran, right_gran
 
     def find_local_max(self, y):

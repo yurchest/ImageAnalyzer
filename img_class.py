@@ -49,27 +49,10 @@ class Img():
         return pix
 
     def get_max_line_bright(self):
-        max_sum = 0
-        for index_line, line in enumerate(self.img):
-            cur_sum = np.sum(line)
-            if cur_sum > max_sum:
-                max_sum = cur_sum
-                index = index_line
-        return index
+        return  np.argmax(self.img.sum(axis=1))
+
 
     def avarage_imgs(self, paths: list):
-
-        # number_of_lines, len_of_line = cv2.imread(paths[0]).shape[0], cv2.imread(paths[0]).shape[1]
-        # print(number_of_lines, len_of_line)
-        # result_img = np.zeros((number_of_lines, len_of_line), dtype=np.uint8)
-
-        # for i in range(number_of_lines):
-        #     sum_line = [0.0]*len_of_line
-        #     for path in paths:
-        #         cur_img = cv2.cvtColor(cv2.imread(path), cv2.COLOR_BGR2GRAY)
-        #         sum_line += (cur_img[i] // len(paths))
-        #     result_img[i] = sum_line
-        
 
         imgs = []
         for path in paths:
