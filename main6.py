@@ -15,6 +15,7 @@ from scipy.signal import find_peaks
 from decimal import Decimal
 import numpy.polynomial.polynomial as poly
 
+
 from scipy.stats import boxcox
 from scipy.special import boxcox1p
 from scipy.stats import norm
@@ -110,13 +111,13 @@ class App(QWidget):
         if self.get_file_name():
             self.Img1 = Img(self.path_img)
             self.Img1.set_line(self.Img1.get_max_line_bright())
-            self.w_root.label_2.setText(self.path_img)
+            self.w_root.label_2.setText(str(self.path_img))
             self.file_opened = True
         else:
             self.w_root.statusbar.showMessage("Не удалось открыть файл ", 1500)
 
     def get_file_name(self):
-        self.path_img, _ = QFileDialog.getOpenFileName(self, "Выберите файл", "./",
+        self.path_img, _ = QFileDialog.getOpenFileNames(self, "Выберите файл", "./",
                                                        "Image Files(*.bmp);;All Files (*)")
         if self.path_img:
             return self.path_img
@@ -439,6 +440,9 @@ class App(QWidget):
 
     def get_eprs(self, mean1, mean2):
         return mean1, mean2
+
+
+
 
 
 if __name__ == '__main__':
