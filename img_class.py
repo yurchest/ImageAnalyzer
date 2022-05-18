@@ -1,14 +1,17 @@
+# -*- encoding: utf-8 -*-
 import imutils
 import cv2
 from PyQt5.QtGui import QPixmap, QImage
 import numpy as np
+from PIL import Image
 
 import glob
+
 
 class Img():
     def __init__(self, img_path):
         self.img = self.avarage_imgs(img_path)
-        self.img = cv2.cvtColor(self.img,cv2.COLOR_BGR2GRAY)
+        # self.img = cv2.cvtColor(self.img,cv2.COLOR_BGR2GRAY)
         self.line = [[0, self.img.shape[0] // 2], [self.img.shape[1], self.img.shape[0] // 2]]
 
 
@@ -34,13 +37,14 @@ class Img():
 
 
     def get_pixmap_img(self,width,height,show_line=True):
-        # img = cv2.cvtColor(self.img, cv2.COLOR_GRAY2BGR)
-        img = self.img
+        img = cv2.cvtColor(self.img, cv2.COLOR_GRAY2BGR)
+        # img = self.img
+        # cv2.imshow('Gray image', img)
         if show_line:
             cv2.line(img, self.line[0], self.line[1], (119, 201, 200), thickness=3)
         img = imutils.resize(img, width=width, height=height)
         img = QImage(img, img.shape[1], \
-                     img.shape[0], img.shape[1] * 3, QImage.Format_RGB888)
+                     img.shape[0],img.shape[1]*3, QImage.Format_RGB888 )
         pix = QPixmap(img)
         return pix
 
@@ -53,27 +57,31 @@ class Img():
                 index = index_line
         return index
 
-    def avarage_imgs(self, paths):
-        # print(cv2.cvtColor(cv2.imread(paths[0]), cv2.COLOR_BGR2GRAY))
-        # img = np.zeros(cv2.cvtColor(cv2.imread(paths[0]), cv2.COLOR_BGR2GRAY).shape)
-        # print(img)
-        # for i in range(img.shape[0]):
-        #     sum = img[i]
-        #
+    def avarage_imgs(self, paths: list):
+
+        # number_of_lines, len_of_line = cv2.imread(paths[0]).shape[0], cv2.imread(paths[0]).shape[1]
+        # print(number_of_lines, len_of_line)
+        # result_img = np.zeros((number_of_lines, len_of_line), dtype=np.uint8)
+
+        # for i in range(number_of_lines):
+        #     sum_line = [0.0]*len_of_line
         #     for path in paths:
-        #         # print(len(cv2.cvtColor(cv2.imread(path), cv2.COLOR_BGR2GRAY)[i]))
-        #         sum += cv2.cvtColor(cv2.imread(path), cv2.COLOR_BGR2GRAY)[i]
-        #     img[i] = np.divide(sum, len(paths))
-        #     print(np.divide(sum, len(paths)))
-        # print(img.shape)
+        #         cur_img = cv2.cvtColor(cv2.imread(path), cv2.COLOR_BGR2GRAY)
+        #         sum_line += (cur_img[i] // len(paths))
+        #     result_img[i] = sum_line
+        
 
-        # sum = np.zeros(cv2.imread(paths[0]).shape)
-        # for path in paths:
-        #     sum += cv2.imread(path)
-
-        image_data = cv2.zeroes(cv2.imread(paths).shape[0],cv2.imread(paths).shape[1],cv2.CV_32F)
+        imgs = []
         for path in paths:
-            cv2.accumulate(image_data, cv2.imread(path))
-        return image_data/len(paths)
+            f = open(path, "rb")
+            chunk = f.read()
+            chunk_arr = np.frombuffer(chunk, dtype=np.uint8)
+            img = cv2.imdecode(chunk_arr, cv2.IMREAD_COLOR)
+            print(path)
+            imgs.append(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY))
+        result_img = np.mean(np.array(imgs), axis=0).astype(np.uint8)
+        return result_img
+
+
 
 

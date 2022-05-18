@@ -136,7 +136,7 @@ class Settings(QWidget):
             pass
 
     def get_file_name(self):
-        self.path_img, _ = QFileDialog.getOpenFileName(self, "Выберите файл", "./",
+        self.path_img, _ = QFileDialog.getOpenFileNames(self, "Выберите файл", "./",
                                                        "Image Files(*.bmp);;All Files (*)")
         if self.path_img:
             return self.path_img

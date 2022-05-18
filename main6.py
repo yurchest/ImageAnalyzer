@@ -86,7 +86,7 @@ class App(QWidget):
 
             # self.w_root.radioButton.setChecked(bool(data[2].strip()))
         else:
-            self.w_root.statusbar.showMessage("Конфигурационный файл не найден ", 1500)
+            self.w_root.statusbar.showMessage("Конфигурационный файл не найден ", 2500)
 
     def open_settings(self):
         self.main_window.setEnabled(False)
@@ -103,24 +103,31 @@ class App(QWidget):
             elif button == self.w_root.find_centre_button:
                 self.w_root.statusbar.showMessage("Обработка ... ")
                 self.Img1.set_line(self.Img1.get_max_line_bright())
-                self.w_root.statusbar.showMessage("Готово ", 1500)
+                self.w_root.statusbar.showMessage("Готово ", 2500)
         else:
-            self.w_root.statusbar.showMessage("Файл не открыт ", 1500)
+            self.w_root.statusbar.showMessage("Файл не открыт ", 2500)
 
     def open_file_create_img(self):
         if self.get_file_name():
+            self.w_root.statusbar.showMessage("Готово ", 2500)
             self.Img1 = Img(self.path_img)
             self.Img1.set_line(self.Img1.get_max_line_bright())
-            self.w_root.label_2.setText(str(self.path_img))
+            if len(self.path_img) == 1:
+                self.w_root.label_2.setText(f"Усреднение по 1 изображению")
+            else:
+                self.w_root.label_2.setText(f"Усреднение по {len(self.path_img)} изображениям")
             self.file_opened = True
         else:
-            self.w_root.statusbar.showMessage("Не удалось открыть файл ", 1500)
+            self.w_root.statusbar.showMessage("Не удалось открыть файл ", 2500)
 
     def get_file_name(self):
+        self.w_root.statusbar.showMessage("Открытие файла ... ")
         self.path_img, _ = QFileDialog.getOpenFileNames(self, "Выберите файл", "./",
                                                        "Image Files(*.bmp);;All Files (*)")
         if self.path_img:
             return self.path_img
+
+
 
     def get_indices(self, lst, el):
         list = []
@@ -169,7 +176,7 @@ class App(QWidget):
                         self.w_root.lineEdit_4.setText(f"{Decimal(str(self.epr1)):.4e}")
                         self.w_root.lineEdit_5.setText(f"{Decimal(str(self.epr2)):.4e}")
                     except Exception as err:
-                        self.w_root.statusbar.showMessage(str(err), 1500)
+                        self.w_root.statusbar.showMessage(str(err), 2500)
 
 
                     # self.ax.plot(sps.norm.pdf(np.arange(len(line)),loc=list(line).index(mean), scale=np.std(line)))
@@ -219,13 +226,13 @@ class App(QWidget):
                         self.w_root.lineEdit_9.setText("")
                 except Exception as err:
                     self.w_root.label_8.setText("Не определен центр контрольного УО")
-                    self.w_root.statusbar.showMessage(str(err), 1500)
+                    self.w_root.statusbar.showMessage(str(err), 2500)
                 self.canvas.draw()
             except Exception as err:
                 self.w_root.label_8.setText("Ошибка построения графика")
-                self.w_root.statusbar.showMessage(str(err), 1500)
+                self.w_root.statusbar.showMessage(str(err), 2500)
         else:
-            self.w_root.statusbar.showMessage("Файл не открыт ", 1500)
+            self.w_root.statusbar.showMessage("Файл не открыт ", 2500)
 
     def find_means(self, y1, y2, plus1, plus2, line):
         if self.w_root.radioButton_3.isChecked():
@@ -367,13 +374,13 @@ class App(QWidget):
             if plot: self.update_plot()
             if setlen: self.calc_set_length()
         else:
-            self.w_root.statusbar.showMessage("Файл не открыт ", 1500)
+            self.w_root.statusbar.showMessage("Файл не открыт ", 2500)
 
     def update_image(self):
         if self.file_opened:
             self.w_root.picture_label.setPixmap(self.Img1.get_pixmap_img(500, 500))
         else:
-            self.w_root.statusbar.showMessage("Файл не открыт ", 1500)
+            self.w_root.statusbar.showMessage("Файл не открыт ", 2500)
 
     def calc_set_length(self):
         if self.w_root.label_8.text() == "Ошибка нахождения контрольных точек":
@@ -383,7 +390,7 @@ class App(QWidget):
                 self.length = np.absolute(round(((self.mean2 - self.mean1) / self.pixel_ugl_size), 5))
                 self.w_root.lineEdit_7.setText(str(self.length))
             except Exception as err:
-                self.w_root.statusbar.showMessage(str(err), 1500)
+                self.w_root.statusbar.showMessage(str(err), 2500)
                 self.w_root.lineEdit_7.setText("Error")
 
     def write_in_file(self):
@@ -410,7 +417,7 @@ class App(QWidget):
             done.setWindowTitle("Информация")
             done.setText("Успешно записано в файл       ")
             done.exec()
-            self.w_root.statusbar.showMessage("Готово ", 1500)
+            self.w_root.statusbar.showMessage("Готово ", 2500)
         except Exception as err:
             error = QMessageBox()
             error.setWindowTitle("Ошибка")
