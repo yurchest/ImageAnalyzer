@@ -16,10 +16,14 @@ from decimal import Decimal
 import numpy.polynomial.polynomial as poly
 
 
-from scipy.stats import boxcox
-from scipy.special import boxcox1p
-from scipy.stats import norm
-import scipy.stats
+def find_left_right(y1, y2, point, plus1, plus2):
+    left_gran = np.argmax(y1 > point) + plus1 - 1
+    right_gran = np.argmax(y2 < point) + plus2
+    return left_gran, right_gran
+
+
+def get_eprs(mean1, mean2):
+    return mean1, mean2
 
 
 class App(QWidget):
@@ -56,7 +60,6 @@ class App(QWidget):
         self.w_root.radioButton_4.toggled.connect(lambda: self.calculate_update_all())
         self.w_root.radioButton_5.toggled.connect(lambda: self.calculate_update_all())
 
-
         self.pushButtonGroup.buttonClicked.connect(self.button_clicked)
         self.pushButtonGroup.buttonClicked.connect(lambda: self.calculate_update_all())
 
@@ -78,7 +81,6 @@ class App(QWidget):
                 if data[2] != "\n": self.show_kontr_ugl_length = data[2].strip()
                 if data[4] != "\n": self.kontr_centr = float(data[4].strip())
                 if data[5] != "\n": self.bright_kontr = float(data[5].strip())
-
 
             self.w_root.lineEdit.setText(data[0].strip().replace('.', ','))
             self.epr_kontr = 1e7
@@ -123,10 +125,9 @@ class App(QWidget):
     def get_file_name(self):
         self.w_root.statusbar.showMessage("Открытие файла ... ")
         self.path_img, _ = QFileDialog.getOpenFileNames(self, "Выберите файл", "./",
-                                                       "Image Files(*.bmp);;All Files (*)")
+                                                        "Image Files(*.bmp);;All Files (*)")
         if self.path_img:
             return self.path_img
-
 
     def update_plot(self):
         if self.file_opened:
@@ -149,34 +150,31 @@ class App(QWidget):
                     self.find_local_max(line)
                     self.find_local_min(line[int(self.peaks[0]):int(self.peaks[-1])])
                     self.local_min = int(np.mean(self.lows))
-                    self.left1, self.right1 = self.find_left_right(line[0:self.peaks[0]],
-                                                                   line[self.peaks[0]:self.local_min],
-                                                                   line[self.local_min] + 0.15 * line[self.peaks[0]], 0,
-                                                                   self.peaks[0])
-                    self.left2, self.right2 = self.find_left_right(line[self.local_min:self.peaks[1]],
-                                                                   line[self.peaks[1]:],
-                                                                   line[self.local_min] + 0.15 * line[self.peaks[0]],
-                                                                   self.local_min, self.peaks[1])
+                    self.left1, self.right1 = find_left_right(line[0:self.peaks[0]],
+                                                              line[self.peaks[0]:self.local_min],
+                                                              line[self.local_min] + 0.15 * line[self.peaks[0]], 0,
+                                                              self.peaks[0])
+                    self.left2, self.right2 = find_left_right(line[self.local_min:self.peaks[1]],
+                                                              line[self.peaks[1]:],
+                                                              line[self.local_min] + 0.15 * line[self.peaks[0]],
+                                                              self.local_min, self.peaks[1])
                     self.mean1, self.mean2 = self.find_means(line[self.left1:self.right1], line[self.left2:self.right2],
-                                                             self.left1, self.left2,line)
+                                                             self.left1, self.left2, line)
 
-                    bright1, bright2 = self.get_eprs(line[int(self.mean1)], line[int(self.mean2)])
+                    bright1, bright2 = get_eprs(line[int(self.mean1)], line[int(self.mean2)])
 
                     try:
-                        self.epr1 = bright1/self.bright_kontr*self.epr_kontr
-                        self.epr2 = bright2/self.bright_kontr*self.epr_kontr
+                        self.epr1 = bright1 / self.bright_kontr * self.epr_kontr
+                        self.epr2 = bright2 / self.bright_kontr * self.epr_kontr
                         self.w_root.lineEdit_4.setText(f"{Decimal(str(self.epr1)):.4e}")
                         self.w_root.lineEdit_5.setText(f"{Decimal(str(self.epr2)):.4e}")
                     except Exception as err:
                         self.w_root.statusbar.showMessage(str(err), 2500)
 
-
                     # self.ax.plot(sps.norm.pdf(np.arange(len(line)),loc=list(line).index(mean), scale=np.std(line)))
                     # self.ax.plot(list(line).index(mean), np.mean(line), "x")
                     # self.ax.plot(self.right11, line[self.right11], "x")
                     # self.ax.plot(self.left11, line[self.left11], "x")
-
-
 
                     self.ax.plot(np.divide(self.mean1, self.pixel_ugl_size), self.mean1_y, "x", color='purple')
                     self.ax.plot(np.divide(self.mean2, self.pixel_ugl_size), self.mean2_y, "x", color='purple')
@@ -206,11 +204,11 @@ class App(QWidget):
                                         color='red', ls=':', lw=1)
                         self.ax.axvline(float(self.kontr_centr / self.pixel_ugl_size) + self.kontr_ugl_length / 2,
                                         color='red', ls=':', lw=1)
-                        bright3, bright4 = self.get_eprs(
+                        bright3, bright4 = get_eprs(
                             line[int(float(self.kontr_centr) - self.kontr_ugl_length * self.pixel_ugl_size / 2)],
                             line[int(float(self.kontr_centr) + self.kontr_ugl_length * self.pixel_ugl_size / 2)])
-                        self.epr3 = bright3/self.bright_kontr*self.epr_kontr
-                        self.epr4 = bright4/self.bright_kontr*self.epr_kontr
+                        self.epr3 = bright3 / self.bright_kontr * self.epr_kontr
+                        self.epr4 = bright4 / self.bright_kontr * self.epr_kontr
                         self.w_root.lineEdit_8.setText(f"{Decimal(str(self.epr3)):.4e}")
                         self.w_root.lineEdit_9.setText(f"{Decimal(str(self.epr4)):.4e}")
                     else:
@@ -240,45 +238,18 @@ class App(QWidget):
             c2 = y2[::-1].cumsum()[::-1]
             mean2 = np.argmin(np.abs(c1 - c2)) + plus2
 
-
         elif self.w_root.radioButton.isChecked():
 
-            # p = np.polyfit(np.arange(line.size), line, 50)
             p = poly.polyfit(np.arange(line.size), line, 50)
-            # yp = np.polyval(p, np.arange(line.size))
             yp = poly.polyval(np.arange(line.size), p)
-            self.ax.plot(np.divide(np.arange(line.size), self.pixel_ugl_size), yp, ls=":", lw=2, color = "purple")
+
+            self.ax.plot(np.divide(np.arange(line.size), self.pixel_ugl_size), yp, ls=":", lw=2, color="purple")
             peaks = self.find_local_max(yp)
             mean1 = peaks[0]
             mean2 = peaks[1]
             self.mean1_y = yp[mean1]
             self.mean2_y = yp[mean2]
 
-            # from scipy.optimize import curve_fit
-
-
-            # pars1, cov = curve_fit(f=self.Gauss, xdata=np.arange(y1.size), ydata=y1, p0=[100, 20, 20], bounds=(-np.inf, np.inf))
-            # pars2, cov = curve_fit(f=self.Gauss, xdata=np.arange(y2.size), ydata=y2, p0=[100, 20, 20], bounds=(-np.inf, np.inf))
-            # print(pars1)
-            # print(pars2)
-            # # self.ax.clear()
-            # fit_y1 = self.Gauss(np.arange(y1.size), pars1[0], pars1[1], pars1[2])
-            # fit_y2 = self.Gauss(np.arange(y2.size), pars2[0], pars2[1], pars2[2])
-            # self.ax.plot(np.divide(np.arange(y1.size) + plus1, self.pixel_ugl_size),fit_y1, ls=":", lw=2, color="purple")
-            # self.ax.plot(np.divide(np.arange(y2.size) + plus2, self.pixel_ugl_size),fit_y2, ls=":", lw=2, color="purple")
-            #
-            # mean1 = pars1[1] + plus1
-            # mean2 = pars2[1] + plus2
-            #
-            # self.mean1_y = np.max(fit_y1)
-            # self.mean2_y = np.max(fit_y2)
-
-            # pars3, cov = curve_fit(f=self.sin_func, xdata=np.arange(line.size), ydata=line, p0=[100, 100, 100, 100, 100, 100],
-            #                        bounds=(-np.inf, np.inf))
-            # print(pars3)
-            # fit_y = self.sin_func(np.arange(line.size), pars3[0], pars3[1], pars3[2], pars3[3], pars3[4], pars3[5])
-            # self.ax.plot(np.divide(np.arange(line.size), self.pixel_ugl_size), fit_y, ls=":", lw=2,
-            #              color="purple")
         elif self.w_root.radioButton_4.isChecked():
             mean1, mean2 = self.peaks[0], self.peaks[1]
             self.mean1_y, self.mean2_y = line[mean1], line[mean2]
@@ -293,17 +264,6 @@ class App(QWidget):
             mean2 = np.sum(np.arange(y2.size) * y2) / np.sum(y2) + plus2
 
         return mean1, mean2
-
-    def Gauss(self,x, a, b,c):
-        return a*np.exp(-np.power(x - b, 2)/(2*np.power(c, 2)))
-
-    def sin_func(self,x, a, b, c, d,e ,f):
-            return (a * x) + (b * x ** 2) + (c * x ** 3) + (d * x ** 4) + (e * x ** 5) + f
-
-    def find_left_right(self, y1, y2, point, plus1, plus2):
-        left_gran = np.argmax(y1 > point) + plus1 - 1
-        right_gran = np.argmax (y2 < point) + plus2
-        return left_gran, right_gran
 
     def find_local_max(self, y):
         peaks, _ = find_peaks(y, height=50, distance=50, prominence=10, width=40)
@@ -401,12 +361,6 @@ class App(QWidget):
             self.calculate_update_all()
             # self.calculate_update_all(plot=False, setlen=False)
         self.count += 1
-
-    def get_eprs(self, mean1, mean2):
-        return mean1, mean2
-
-
-
 
 
 if __name__ == '__main__':
