@@ -8,6 +8,8 @@ from img_class import Img
 import numpy as np
 from datetime import datetime
 import os
+import warnings
+
 
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
@@ -239,8 +241,7 @@ class App(QWidget):
             mean2 = np.argmin(np.abs(c1 - c2)) + plus2
 
         elif self.w_root.radioButton.isChecked():
-
-            p = poly.polyfit(np.arange(line.size), line, 50)
+            p = poly.polyfit(np.arange(line.size), line, 44)
             yp = poly.polyval(np.arange(line.size), p)
 
             self.ax.plot(np.divide(np.arange(line.size), self.pixel_ugl_size), yp, ls=":", lw=2, color="purple")
