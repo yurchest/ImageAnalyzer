@@ -8,6 +8,7 @@ from img_class import Img
 import cv2
 import imutils
 
+
 class Settings(QWidget):
     out_signal = pyqtSignal(list)
     update_img_signal_max_br = pyqtSignal(object)
@@ -28,18 +29,16 @@ class Settings(QWidget):
         # self.w_root.apply_settings_button.clicked.connect(self.read_data)
         self.w_root.choose_kontr_file_button.clicked.connect(self.open_file_show_img)
         self.w_root.choose_kontr_file_button.clicked.connect(self.find_centre_write_lineinfile)
-        self.update_img_signal_max_br.connect(lambda:self.write_data(4))
+        self.update_img_signal_max_br.connect(lambda: self.write_data(4))
 
-        self.w_root.lineEdit.textChanged.connect(lambda:self.write_data(1))
-        self.w_root.lineEdit_2.textChanged.connect(lambda:self.write_data(2))
-        self.w_root.radioButton.toggled.connect(lambda:self.write_data(3))
+        self.w_root.lineEdit.textChanged.connect(lambda: self.write_data(1))
+        self.w_root.lineEdit_2.textChanged.connect(lambda: self.write_data(2))
+        self.w_root.radioButton.toggled.connect(lambda: self.write_data(3))
 
         self.w_root.close_button.clicked.connect(self.close)
 
-
     def close(self):
         self.w2.close()
-        return
 
     def find_centre_write_lineinfile(self):
         if self.file_opened:
@@ -51,18 +50,18 @@ class Settings(QWidget):
             with open("cfg/file_line_max.txt", 'w') as f:
                 for el in max_line:
                     f.write(str(el) + '\n')
-            cv2.imwrite('cfg/kontr_img_tmp.png',self.Img1.img)
+            cv2.imwrite('cfg/kontr_img_tmp.png', self.Img1.img)
 
     def read_data(self):
         try:
-            with open("cfg/sett.txt",'r') as f:
+            with open("cfg/sett.txt", 'r') as f:
                 self.data = f.readlines()
                 print(self.data)
                 self.set_data()
                 self.out_signal.emit(self.data)
         except FileNotFoundError:
             os.mkdir('cfg')
-            with open("cfg/sett.txt",'w') as f:
+            with open("cfg/sett.txt", 'w') as f:
                 for line in range(4):
                     f.write('\n')
         try:
@@ -89,7 +88,6 @@ class Settings(QWidget):
         except:
             print("Нет файла фото контрольного замера")
 
-
     def write_data(self, x):
         try:
             with open("cfg/file_line_max.txt", 'r') as f:
@@ -114,7 +112,7 @@ class Settings(QWidget):
                     self.w_root.label.setText(data[3][:6])
                     print(data[0])
                     if data[0] != '\n':
-                        data[3] = str(float(self.index_max_in_max_line/float(self.data[0].replace(',', '.')))) + '\n'
+                        data[3] = str(float(self.index_max_in_max_line / float(self.data[0].replace(',', '.')))) + '\n'
                     else:
                         data[3] = str(float(self.index_max_in_max_line / 1)) + '\n'
 
@@ -156,10 +154,9 @@ class Settings(QWidget):
             error.setIcon(QMessageBox.Information)
             error.exec()
 
-
     def update_image(self):
         if self.file_opened:
-            self.w_root.picture_label.setPixmap(self.Img1.get_pixmap_img(350, 200,  show_line=False))
+            self.w_root.picture_label.setPixmap(self.Img1.get_pixmap_img(350, 200, show_line=False))
         else:
             self.w_root.statusbar.showMessage("Файл не открыт ", 1500)
 

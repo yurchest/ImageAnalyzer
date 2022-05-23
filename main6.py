@@ -15,7 +15,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
 from scipy.signal import find_peaks
 from decimal import Decimal
-import numpy.polynomial.polynomial as poly
+# import numpy.polynomial.polynomial as poly
 
 
 def find_left_right(y1, y2, point, plus1, plus2):
@@ -56,7 +56,7 @@ class App(QWidget):
         self.pushButtonGroup2.addButton(self.w_root.line_down_button)
         self.pushButtonGroup.addButton(self.w_root.write_file_button)
 
-        self.w_root.radioButton.setChecked(True)
+        self.w_root.radioButton_5.setChecked(True)
         self.w_root.radioButton.toggled.connect(lambda: self.calculate_update_all())
         self.w_root.radioButton_3.toggled.connect(lambda: self.calculate_update_all())
         self.w_root.radioButton_4.toggled.connect(lambda: self.calculate_update_all())
@@ -241,8 +241,8 @@ class App(QWidget):
             mean2 = np.argmin(np.abs(c1 - c2)) + plus2
 
         elif self.w_root.radioButton.isChecked():
-            p = poly.polyfit(np.arange(line.size), line, 44)
-            yp = poly.polyval(np.arange(line.size), p)
+            p = np.polyfit(np.arange(line.size), line, 20)
+            yp = np.polyval(p, np.arange(line.size))
 
             self.ax.plot(np.divide(np.arange(line.size), self.pixel_ugl_size), yp, ls=":", lw=2, color="purple")
             peaks = self.find_local_max(yp)
