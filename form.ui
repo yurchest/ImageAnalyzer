@@ -67,7 +67,7 @@
     </property>
     <property name="styleSheet">
      <string notr="true">#choose_file_button{   
- background-color: rgb(140,140,140);
+ background-color: rgba(140,140,140);
     border-width: 2px;
     border-radius: 10px;
     font: bold 14px;
@@ -76,12 +76,12 @@
 }
 	
 #choose_file_button:hover {
-	background-color: rgb(160,160,160);
+	background-color: rgba(160,160,160);
 }
 
 
 #choose_file_button:pressed {
-	background-color:  rgb(180,180,180);
+	background-color:  rgba(180,180,180);
 }</string>
     </property>
     <property name="text">
@@ -130,9 +130,9 @@
    <widget class="QPushButton" name="write_file_button">
     <property name="geometry">
      <rect>
-      <x>1180</x>
-      <y>660</y>
-      <width>191</width>
+      <x>1390</x>
+      <y>670</y>
+      <width>182</width>
       <height>41</height>
      </rect>
     </property>
@@ -146,7 +146,7 @@
     </property>
     <property name="styleSheet">
      <string notr="true">#write_file_button{   
- background-color: rgb(140,140,140);
+ background-color: rgba(140,140,140);
     border-width: 2px;
     border-radius: 10px;
     font: bold 14px;
@@ -155,12 +155,12 @@
 }
 	
 #write_file_button:hover {
-	background-color: rgb(160,160,160);
+	background-color: rgba(160,160,160);
 }
 
 
 #write_file_button:pressed {
-	background-color:  rgb(180,180,180);
+	background-color:  rgba(180,180,180);
 }</string>
     </property>
     <property name="text">
@@ -191,7 +191,7 @@
     </property>
     <property name="styleSheet">
      <string notr="true">#line_up_button{   
- background-color: rgb(140,140,140);
+ background-color: rgba(140,140,140);
     border-width: 2px;
     border-radius: 10px;
     font: bold 14px;
@@ -199,12 +199,12 @@
 }
 	
 #line_up_button:hover {
-	background-color: rgb(160,160,160);
+	background-color: rgba(160,160,160);
 }
 
 
 #line_up_button:pressed {
-	background-color:  rgb(180,180,180);
+	background-color:  rgba(180,180,180);
 }</string>
     </property>
     <property name="text">
@@ -239,7 +239,7 @@
     </property>
     <property name="styleSheet">
      <string notr="true">#line_down_button{   
- background-color: rgb(140,140,140);
+ background-color: rgba(140,140,140);
     border-width: 2px;
     border-radius: 10px;
     font: bold 12px;
@@ -247,12 +247,12 @@
 }
 	
 #line_down_button:hover {
-	background-color: rgb(160,160,160);
+	background-color: rgba(160,160,160);
 }
 
 
 #line_down_button:pressed {
-	background-color:  rgb(180,180,180);
+	background-color:  rgba(180,180,180);
 }</string>
     </property>
     <property name="text">
@@ -287,7 +287,7 @@
     </property>
     <property name="styleSheet">
      <string notr="true">#find_centre_button{   
- background-color: rgb(140,140,140);
+ background-color: rgba(140,140,140);
     border-width: 2px;
     border-radius: 10px;
     font: bold 14px;
@@ -296,12 +296,12 @@
 }
 	
 #find_centre_button:hover {
-	background-color: rgb(160,160,160);
+	background-color: rgba(160,160,160);
 }
 
 
 #find_centre_button:pressed {
-	background-color:  rgb(180,180,180);
+	background-color:  rgba(180,180,180);
 }</string>
     </property>
     <property name="text">
@@ -338,7 +338,7 @@
      </font>
     </property>
     <property name="styleSheet">
-     <string notr="true">color: rgb(192, 28, 40);</string>
+     <string notr="true">color: rgba(192, 28, 40);</string>
     </property>
     <property name="text">
      <string/>
@@ -363,7 +363,7 @@
     </property>
     <property name="styleSheet">
      <string notr="true">#settings_button{   
- background-color: rgb(140,140,140);
+ background-color: rgba(140,140,140);
     border-width: 2px;
     border-radius: 10px;
     font: bold 14px;
@@ -372,12 +372,12 @@
 }
 	
 #settings_button:hover {
-	background-color: rgb(160,160,160);
+	background-color: rgba(160,160,160);
 }
 
 
 #settings_button:pressed {
-	background-color:  rgb(180,180,180);
+	background-color:  rgba(180,180,180);
 }</string>
     </property>
     <property name="text">
@@ -973,7 +973,7 @@ border: 2px solid gray;</string>
      <rect>
       <x>630</x>
       <y>580</y>
-      <width>511</width>
+      <width>526</width>
       <height>151</height>
      </rect>
     </property>
@@ -1138,11 +1138,11 @@ border: 2px solid gray;</string>
         </font>
        </property>
        <property name="text">
-        <string>Центр тяжести пучка:</string>
+        <string>Среднее взвешенное:</string>
        </property>
       </widget>
      </item>
-     <item row="0" column="0">
+     <item row="0" column="0" colspan="2">
       <widget class="QLabel" name="label_4">
        <property name="maximumSize">
         <size>
@@ -1160,7 +1160,7 @@ border: 2px solid gray;</string>
         </font>
        </property>
        <property name="text">
-        <string>Алгоритм поиска центра:</string>
+        <string>Алгоритм поиска центров пятен:</string>
        </property>
       </widget>
      </item>
@@ -1186,6 +1186,46 @@ border: 2px solid gray;</string>
     </property>
     <property name="text">
      <string>угловых секунд</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="save_graph_button">
+    <property name="geometry">
+     <rect>
+      <x>1170</x>
+      <y>670</y>
+      <width>182</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>-1</pointsize>
+      <weight>75</weight>
+      <italic>false</italic>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">#save_graph_button{   
+ background-color: rgba(140,140,140);
+    border-width: 2px;
+    border-radius: 10px;
+    font: bold 14px;
+    min-width: 10em;
+    padding: 6px;
+}
+	
+#save_graph_button:hover {
+	background-color: rgba(160,160,160);
+}
+
+
+#save_graph_button:pressed {
+	background-color:  rgba(180,180,180);
+}</string>
+    </property>
+    <property name="text">
+     <string>Сохранить график</string>
     </property>
    </widget>
   </widget>

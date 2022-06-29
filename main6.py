@@ -9,6 +9,7 @@ import numpy as np
 from datetime import datetime
 import os
 import warnings
+from matplotlib.patches import FancyArrowPatch
 
 
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -42,7 +43,10 @@ class App(QWidget):
         self.set_form.set_mainwindow_active.connect(self.calculate_update_all)
         self.pixel_ugl_size = 1
         self.set_incoming_data()
-
+        try:
+            os.mkdir('measurements')
+        except Exception as err:
+            print(err)
         self.init_plot()
 
         self.file_opened = False
@@ -55,6 +59,7 @@ class App(QWidget):
         self.pushButtonGroup2.addButton(self.w_root.line_up_button)
         self.pushButtonGroup2.addButton(self.w_root.line_down_button)
         self.pushButtonGroup.addButton(self.w_root.write_file_button)
+        self.pushButtonGroup.addButton(self.w_root.save_graph_button)
 
         self.w_root.radioButton_5.setChecked(True)
         self.w_root.radioButton.toggled.connect(lambda: self.calculate_update_all())
@@ -108,6 +113,9 @@ class App(QWidget):
                 self.w_root.statusbar.showMessage("Обработка ... ")
                 self.Img1.set_line(self.Img1.get_max_line_bright())
                 self.w_root.statusbar.showMessage("Готово ", 2500)
+            elif button == self.w_root.save_graph_button:
+                self.save_graph()
+
         else:
             self.w_root.statusbar.showMessage("Файл не открыт ", 2500)
 
@@ -180,20 +188,25 @@ class App(QWidget):
 
                     self.ax.plot(np.divide(self.mean1, self.pixel_ugl_size), self.mean1_y, "x", color='purple')
                     self.ax.plot(np.divide(self.mean2, self.pixel_ugl_size), self.mean2_y, "x", color='purple')
-                    self.ax.plot(np.divide(self.left1, self.pixel_ugl_size), line[self.left1], "x", color='black')
-                    self.ax.plot(np.divide(self.left2, self.pixel_ugl_size), line[self.left2], "x", color='black')
-                    self.ax.plot(np.divide(self.right2, self.pixel_ugl_size), line[self.right2], "x", color='black')
-                    self.ax.plot(np.divide(self.right1, self.pixel_ugl_size), line[self.right1], "x", color='black')
+                    # self.ax.plot(np.divide(self.left1, self.pixel_ugl_size), line[self.left1], "x", color='black')
+                    # self.ax.plot(np.divide(self.left2, self.pixel_ugl_size), line[self.left2], "x", color='black')
+                    # self.ax.plot(np.divide(self.right2, self.pixel_ugl_size), line[self.right2], "x", color='black')
+                    # self.ax.plot(np.divide(self.right1, self.pixel_ugl_size), line[self.right1], "x", color='black')
 
                     self.ax.axvline(np.divide(self.mean1, self.pixel_ugl_size),
                                     ymax=self.mean1_y / self.ax.get_ylim()[1], color='green', ls=':', lw=1)
                     self.ax.axvline(np.divide(self.mean2, self.pixel_ugl_size),
                                     ymax=self.mean2_y / self.ax.get_ylim()[1], color='green', ls=':', lw=1)
+                    y_arrow  = min(self.mean1_y, self.mean2_y) * 0.8
+                    myArrow = FancyArrowPatch((np.divide(self.mean1, self.pixel_ugl_size), y_arrow), (np.divide(self.mean2, self.pixel_ugl_size), y_arrow), arrowstyle='<|-|>', mutation_scale=15, shrinkA=0, shrinkB=0,color='0.5')
+                    self.ax.add_artist(myArrow)
+
                     # self.ax.axhline(y=10, xmin=np.divide(self.mean1,self.pixel_ugl_size)/self.ax.get_xlim()[1],xmax=np.divide(self.mean2,self.pixel_ugl_size)/self.ax.get_xlim()[1] ,color='green', ls=':', lw=1)
 
                     # self.ax.plot(self.peaks, line[self.peaks], "x")
-                    self.ax.plot(np.divide(self.local_min, self.pixel_ugl_size),
-                                 line[self.local_min], "x")
+
+                    # self.ax.plot(np.divide(self.local_min, self.pixel_ugl_size),
+                    #              line[self.local_min], "x")
                 except Exception as err:
                     self.w_root.label_8.setText("Ошибка нахождения контрольных точек")
                     self.w_root.lineEdit_7.setText("Error")
@@ -241,10 +254,13 @@ class App(QWidget):
             mean2 = np.argmin(np.abs(c1 - c2)) + plus2
 
         elif self.w_root.radioButton.isChecked():
+            warnings.simplefilter('ignore', np.RankWarning)
             p = np.polyfit(np.arange(line.size), line, 20)
             yp = np.polyval(p, np.arange(line.size))
 
             self.ax.plot(np.divide(np.arange(line.size), self.pixel_ugl_size), yp, ls=":", lw=2, color="purple")
+            
+
             peaks = self.find_local_max(yp)
             mean1 = peaks[0]
             mean2 = peaks[1]
@@ -257,7 +273,7 @@ class App(QWidget):
 
         elif self.w_root.radioButton_5.isChecked():
 
-            ## 3-й способ:
+            ## 3-й способ:  
             self.mean1_y = np.mean(y1)
             self.mean2_y = np.mean(y2)
 
@@ -312,13 +328,16 @@ class App(QWidget):
                 self.w_root.lineEdit_7.setText("Error")
 
     def write_in_file(self):
+
         try:
-            fp = open('file.txt', 'w')
+            date_time = datetime.now().strftime("%m.%d.%Y___%H-%M-%S")
+            name_of_file = f"Measure {date_time}.txt"
+            fp = open(f"measurements/{name_of_file}", 'w')
             y = self.Img1.get_line()
             x = np.divide(np.arange(len(y)), self.pixel_ugl_size)
             fp.write('Date/Time : ' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + '\n')
             fp.write('Угловой размер пикселя = ' + str(self.pixel_ugl_size) + '\n')
-            fp.write('Угловое расстояние между пятнами = ' + str(self.length) + " угловых секунд" + '\n\n')
+            fp.write('Угловое расстояние между пятнами = ' + self.w_root.lineEdit_7.text() + " угловых секунд" + '\n\n') 
             fp.write('-----------------------------------------------\n')
             fp.write('Измерения ЭПР: \n')
             try:
@@ -329,11 +348,13 @@ class App(QWidget):
                 fp.write('Правое пятно = ' + f"Неизвестно" + '  м^2\n\n\n')
             for i in range(len(y)):
                 # fp.write(str(x[i]))
-                fp.write(f"%{len(str(max(x))) + 1}.6f%{len(str(max(y))) + 10}.5f\n" % (x[i], y[i]))
-            fp.close()
+                # fp.write(f"%{len(str(max(x))) + 1}.6f%{len(str(max(y))) + 10}.5f\n" % (x[i], y[i]))
+                # fp.write("{:<12} {:<8}\n".format(x[i], y[i]))
+                fp.write(f"{x[i]:.6f}\t{y[i]:.5f}\n")
+            fp.close()  
             done = QMessageBox()
             done.setWindowTitle("Информация")
-            done.setText("Успешно записано в файл       ")
+            done.setText(f"Успешно записано в файл: {name_of_file}       ")
             done.exec()
             self.w_root.statusbar.showMessage("Готово ", 2500)
         except Exception as err:
@@ -362,6 +383,24 @@ class App(QWidget):
             self.calculate_update_all()
             # self.calculate_update_all(plot=False, setlen=False)
         self.count += 1
+
+    def save_graph(self):
+        try:
+            date_time = datetime.now().strftime("%m.%d.%Y___%H-%M-%S")
+            name_of_file = f"Graph {date_time}.jpg"
+            self.canvas.print_figure(f"measurements/{name_of_file}")
+            done = QMessageBox()
+            done.setWindowTitle("Информация")
+            done.setText(f"График успешно сохранен под именем : {name_of_file}       ")
+            done.exec()
+            self.w_root.statusbar.showMessage("Готово ", 2500)
+        except Exception as err:
+            error = QMessageBox()
+            error.setWindowTitle("Ошибка")
+            error.setText("Ошибка сохранения графика\n" + str(err))
+            error.setIcon(QMessageBox.Information)
+            error.exec()
+            self.w_root.statusbar.showMessage("Ошибка сохранения графика    ........" + str(err), 2000)
 
 
 if __name__ == '__main__':
