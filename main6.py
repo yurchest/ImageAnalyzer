@@ -70,6 +70,8 @@ class App(QWidget):
         self.pushButtonGroup.buttonClicked.connect(self.button_clicked)
         self.pushButtonGroup.buttonClicked.connect(lambda: self.calculate_update_all())
 
+        self.w_root.comboBox.currentTextChanged.connect(self.update_plot)
+
         self.timer = QtCore.QTimer()
         self.pushButtonGroup2.buttonPressed.connect(self.on_press)
         self.pushButtonGroup2.buttonReleased.connect(self.on_release)
@@ -141,103 +143,124 @@ class App(QWidget):
 
     def update_plot(self):
         if self.file_opened:
-            try:
-
+            if self.w_root.comboBox.currentText() == 'Однопятенный':
                 self.ax.clear()
                 self.ax.grid(axis="y")
                 line = np.array(self.Img1.get_line())
-                self.ax.plot(np.divide(np.arange(line.size), self.pixel_ugl_size), line)
-                # ## Показывать привидение к нормальному ------------------
-                # line_norm = np.multiply(list(boxcox1p(list(line), -0.2)), 8)
-                # for i in range(line_norm.size):
-                #     if line_norm[i] < 0.4*max(line_norm):
-                #         line_norm[i] = 0
-                # self.ax.plot(np.divide(np.arange(len(line_norm)), self.pixel_ugl_size), line_norm, ls='-')
-                # ## ------------------------------------------------------
+                self.mean = self.find_one_mean(line)
+                self.ax.plot(np.divide(np.arange(line.size), self.pixel_ugl_size) - np.divide(self.mean,self.pixel_ugl_size) , line)
+                self.ax.plot(np.divide(self.mean, self.pixel_ugl_size) - np.divide(self.mean,self.pixel_ugl_size), line[int(self.mean)], "x", color='purple')
+                self.ax.axvline(np.divide(self.mean, self.pixel_ugl_size) - np.divide(self.mean,self.pixel_ugl_size),
+                                        ymax=line[int(self.mean)] / self.ax.get_ylim()[1], color='green', ls=':', lw=1)
                 self.w_root.label_8.setText("")
-
+                self.canvas.draw()
+            else:  
                 try:
-                    self.find_local_max(line)
-                    self.find_local_min(line[int(self.peaks[0]):int(self.peaks[-1])])
-                    self.local_min = int(np.mean(self.lows))
-                    self.left1, self.right1 = find_left_right(line[0:self.peaks[0]],
-                                                              line[self.peaks[0]:self.local_min],
-                                                              line[self.local_min] + 0.15 * line[self.peaks[0]], 0,
-                                                              self.peaks[0])
-                    self.left2, self.right2 = find_left_right(line[self.local_min:self.peaks[1]],
-                                                              line[self.peaks[1]:],
-                                                              line[self.local_min] + 0.15 * line[self.peaks[0]],
-                                                              self.local_min, self.peaks[1])
-                    self.mean1, self.mean2 = self.find_means(line[self.left1:self.right1], line[self.left2:self.right2],
-                                                             self.left1, self.left2, line)
 
-                    bright1, bright2 = get_eprs(line[int(self.mean1)], line[int(self.mean2)])
+                    self.ax.clear()
+                    self.ax.grid(axis="y")
+                    line = np.array(self.Img1.get_line())
+                    self.ax.plot(np.divide(np.arange(line.size), self.pixel_ugl_size), line)
+                    # ## Показывать привидение к нормальному ------------------
+                    # line_norm = np.multiply(list(boxcox1p(list(line), -0.2)), 8)
+                    # for i in range(line_norm.size):
+                    #     if line_norm[i] < 0.4*max(line_norm):
+                    #         line_norm[i] = 0
+                    # self.ax.plot(np.divide(np.arange(len(line_norm)), self.pixel_ugl_size), line_norm, ls='-')
+                    # ## ------------------------------------------------------
+                    self.w_root.label_8.setText("")
+                    
 
                     try:
-                        self.epr1 = bright1 / self.bright_kontr * self.epr_kontr
-                        self.epr2 = bright2 / self.bright_kontr * self.epr_kontr
-                        self.w_root.lineEdit_4.setText(f"{Decimal(str(self.epr1)):.4e}")
-                        self.w_root.lineEdit_5.setText(f"{Decimal(str(self.epr2)):.4e}")
+                        self.find_local_max(line)
+                        self.find_local_min(line[int(self.peaks[0]):int(self.peaks[-1])])
+                        self.local_min = int(np.mean(self.lows))
+                        self.left1, self.right1 = find_left_right(line[0:self.peaks[0]],
+                                                                  line[self.peaks[0]:self.local_min],
+                                                                  line[self.local_min] + 0.15 * line[self.peaks[0]], 0,
+                                                                  self.peaks[0])
+                        self.left2, self.right2 = find_left_right(line[self.local_min:self.peaks[1]],
+                                                                  line[self.peaks[1]:],
+                                                                  line[self.local_min] + 0.15 * line[self.peaks[0]],
+                                                                  self.local_min, self.peaks[1])
+                        self.mean1, self.mean2 = self.find_means(line[self.left1:self.right1], line[self.left2:self.right2],
+                                                                 self.left1, self.left2, line)
+
+                        bright1, bright2 = get_eprs(line[int(self.mean1)], line[int(self.mean2)])
+
+                        try:
+                            self.epr1 = bright1 / self.bright_kontr * self.epr_kontr
+                            self.epr2 = bright2 / self.bright_kontr * self.epr_kontr
+                            self.w_root.lineEdit_4.setText(f"{Decimal(str(self.epr1)):.4e}")
+                            self.w_root.lineEdit_5.setText(f"{Decimal(str(self.epr2)):.4e}")
+                        except Exception as err:
+                            self.w_root.statusbar.showMessage(str(err), 2500)
+
+                        # self.ax.plot(sps.norm.pdf(np.arange(len(line)),loc=list(line).index(mean), scale=np.std(line)))
+                        # self.ax.plot(list(line).index(mean), np.mean(line), "x")
+                        # self.ax.plot(self.right11, line[self.right11], "x")
+                        # self.ax.plot(self.left11, line[self.left11], "x")
+
+                        self.ax.plot(np.divide(self.mean1, self.pixel_ugl_size), self.mean1_y, "x", color='purple')
+                        self.ax.plot(np.divide(self.mean2, self.pixel_ugl_size), self.mean2_y, "x", color='purple')
+                        # self.ax.plot(np.divide(self.left1, self.pixel_ugl_size), line[self.left1], "x", color='black')
+                        # self.ax.plot(np.divide(self.left2, self.pixel_ugl_size), line[self.left2], "x", color='black')
+                        # self.ax.plot(np.divide(self.right2, self.pixel_ugl_size), line[self.right2], "x", color='black')
+                        # self.ax.plot(np.divide(self.right1, self.pixel_ugl_size), line[self.right1], "x", color='black')
+
+                        self.ax.axvline(np.divide(self.mean1, self.pixel_ugl_size),
+                                        ymax=self.mean1_y / self.ax.get_ylim()[1], color='green', ls=':', lw=1)
+                        self.ax.axvline(np.divide(self.mean2, self.pixel_ugl_size),
+                                        ymax=self.mean2_y / self.ax.get_ylim()[1], color='green', ls=':', lw=1)
+                        y_arrow  = min(self.mean1_y, self.mean2_y) * 0.8
+                        myArrow = FancyArrowPatch((np.divide(self.mean1, self.pixel_ugl_size), y_arrow), (np.divide(self.mean2, self.pixel_ugl_size), y_arrow), arrowstyle='<|-|>', mutation_scale=15, shrinkA=0, shrinkB=0,color='0.5')
+                        self.ax.add_artist(myArrow)
+
+                        # self.ax.axhline(y=10, xmin=np.divide(self.mean1,self.pixel_ugl_size)/self.ax.get_xlim()[1],xmax=np.divide(self.mean2,self.pixel_ugl_size)/self.ax.get_xlim()[1] ,color='green', ls=':', lw=1)
+
+                        # self.ax.plot(self.peaks, line[self.peaks], "x")
+
+                        # self.ax.plot(np.divide(self.local_min, self.pixel_ugl_size),
+                        #              line[self.local_min], "x")
                     except Exception as err:
+                        self.w_root.label_8.setText("Ошибка нахождения контрольных точек")
+                        self.w_root.lineEdit_7.setText("Error")
+                        self.w_root.lineEdit_4.setText("")
+                        self.w_root.lineEdit_5.setText("")
+                        self.w_root.statusbar.showMessage(str(err), 1500)
+                    try:
+                        if self.show_kontr_ugl_length == "True":
+                            self.ax.axvline(float(self.kontr_centr / self.pixel_ugl_size) - self.kontr_ugl_length / 2,
+                                            color='red', ls=':', lw=1)
+                            self.ax.axvline(float(self.kontr_centr / self.pixel_ugl_size) + self.kontr_ugl_length / 2,
+                                            color='red', ls=':', lw=1)
+                            bright3, bright4 = get_eprs(
+                                line[int(float(self.kontr_centr) - self.kontr_ugl_length * self.pixel_ugl_size / 2)],
+                                line[int(float(self.kontr_centr) + self.kontr_ugl_length * self.pixel_ugl_size / 2)])
+                            self.epr3 = bright3 / self.bright_kontr * self.epr_kontr
+                            self.epr4 = bright4 / self.bright_kontr * self.epr_kontr
+                            self.w_root.lineEdit_8.setText(f"{Decimal(str(self.epr3)):.4e}")
+                            self.w_root.lineEdit_9.setText(f"{Decimal(str(self.epr4)):.4e}")
+                        else:
+                            self.w_root.lineEdit_8.setText("")
+                            self.w_root.lineEdit_9.setText("")
+                    except Exception as err:
+                        self.w_root.label_8.setText("Не определен центр контрольного УО")
                         self.w_root.statusbar.showMessage(str(err), 2500)
-
-                    # self.ax.plot(sps.norm.pdf(np.arange(len(line)),loc=list(line).index(mean), scale=np.std(line)))
-                    # self.ax.plot(list(line).index(mean), np.mean(line), "x")
-                    # self.ax.plot(self.right11, line[self.right11], "x")
-                    # self.ax.plot(self.left11, line[self.left11], "x")
-
-                    self.ax.plot(np.divide(self.mean1, self.pixel_ugl_size), self.mean1_y, "x", color='purple')
-                    self.ax.plot(np.divide(self.mean2, self.pixel_ugl_size), self.mean2_y, "x", color='purple')
-                    # self.ax.plot(np.divide(self.left1, self.pixel_ugl_size), line[self.left1], "x", color='black')
-                    # self.ax.plot(np.divide(self.left2, self.pixel_ugl_size), line[self.left2], "x", color='black')
-                    # self.ax.plot(np.divide(self.right2, self.pixel_ugl_size), line[self.right2], "x", color='black')
-                    # self.ax.plot(np.divide(self.right1, self.pixel_ugl_size), line[self.right1], "x", color='black')
-
-                    self.ax.axvline(np.divide(self.mean1, self.pixel_ugl_size),
-                                    ymax=self.mean1_y / self.ax.get_ylim()[1], color='green', ls=':', lw=1)
-                    self.ax.axvline(np.divide(self.mean2, self.pixel_ugl_size),
-                                    ymax=self.mean2_y / self.ax.get_ylim()[1], color='green', ls=':', lw=1)
-                    y_arrow  = min(self.mean1_y, self.mean2_y) * 0.8
-                    myArrow = FancyArrowPatch((np.divide(self.mean1, self.pixel_ugl_size), y_arrow), (np.divide(self.mean2, self.pixel_ugl_size), y_arrow), arrowstyle='<|-|>', mutation_scale=15, shrinkA=0, shrinkB=0,color='0.5')
-                    self.ax.add_artist(myArrow)
-
-                    # self.ax.axhline(y=10, xmin=np.divide(self.mean1,self.pixel_ugl_size)/self.ax.get_xlim()[1],xmax=np.divide(self.mean2,self.pixel_ugl_size)/self.ax.get_xlim()[1] ,color='green', ls=':', lw=1)
-
-                    # self.ax.plot(self.peaks, line[self.peaks], "x")
-
-                    # self.ax.plot(np.divide(self.local_min, self.pixel_ugl_size),
-                    #              line[self.local_min], "x")
+                    self.canvas.draw()
                 except Exception as err:
-                    self.w_root.label_8.setText("Ошибка нахождения контрольных точек")
-                    self.w_root.lineEdit_7.setText("Error")
-                    self.w_root.lineEdit_4.setText("")
-                    self.w_root.lineEdit_5.setText("")
-                    self.w_root.statusbar.showMessage(str(err), 1500)
-                try:
-                    if self.show_kontr_ugl_length == "True":
-                        self.ax.axvline(float(self.kontr_centr / self.pixel_ugl_size) - self.kontr_ugl_length / 2,
-                                        color='red', ls=':', lw=1)
-                        self.ax.axvline(float(self.kontr_centr / self.pixel_ugl_size) + self.kontr_ugl_length / 2,
-                                        color='red', ls=':', lw=1)
-                        bright3, bright4 = get_eprs(
-                            line[int(float(self.kontr_centr) - self.kontr_ugl_length * self.pixel_ugl_size / 2)],
-                            line[int(float(self.kontr_centr) + self.kontr_ugl_length * self.pixel_ugl_size / 2)])
-                        self.epr3 = bright3 / self.bright_kontr * self.epr_kontr
-                        self.epr4 = bright4 / self.bright_kontr * self.epr_kontr
-                        self.w_root.lineEdit_8.setText(f"{Decimal(str(self.epr3)):.4e}")
-                        self.w_root.lineEdit_9.setText(f"{Decimal(str(self.epr4)):.4e}")
-                    else:
-                        self.w_root.lineEdit_8.setText("")
-                        self.w_root.lineEdit_9.setText("")
-                except Exception as err:
-                    self.w_root.label_8.setText("Не определен центр контрольного УО")
+                    self.w_root.label_8.setText("Ошибка построения графика")
                     self.w_root.statusbar.showMessage(str(err), 2500)
-                self.canvas.draw()
-            except Exception as err:
-                self.w_root.label_8.setText("Ошибка построения графика")
-                self.w_root.statusbar.showMessage(str(err), 2500)
         else:
             self.w_root.statusbar.showMessage("Файл не открыт ", 2500)
+
+
+    def find_one_mean(self, y1):
+        ## 3-й способ:  
+        self.mean1_y = np.mean(y1)
+        mean1 = np.sum(np.arange(y1.size) * y1) / np.sum(y1)
+
+        return mean1
 
     def find_means(self, y1, y2, plus1, plus2, line):
         if self.w_root.radioButton_3.isChecked():
@@ -334,23 +357,30 @@ class App(QWidget):
             name_of_file = f"Measure {date_time}.txt"
             fp = open(f"measurements/{name_of_file}", 'w')
             y = self.Img1.get_line()
-            x = np.divide(np.arange(len(y)), self.pixel_ugl_size)
-            fp.write('Date/Time : ' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + '\n')
-            fp.write('Угловой размер пикселя = ' + str(self.pixel_ugl_size) + '\n')
-            fp.write('Угловое расстояние между пятнами = ' + self.w_root.lineEdit_7.text() + " угловых секунд" + '\n\n') 
-            fp.write('-----------------------------------------------\n')
-            fp.write('Измерения ЭПР: \n')
-            try:
-                fp.write('Левое пятно = ' + f"{Decimal(str(self.epr1)):.4e}" + '  м^2\n')
-                fp.write('Правое пятно = ' + f"{Decimal(str(self.epr2)):.4e}" + '  м^2\n\n\n')
-            except:
-                fp.write('Левое пятно = ' + f"Неизвестно" + '  м^2\n')
-                fp.write('Правое пятно = ' + f"Неизвестно" + '  м^2\n\n\n')
-            for i in range(len(y)):
-                # fp.write(str(x[i]))
-                # fp.write(f"%{len(str(max(x))) + 1}.6f%{len(str(max(y))) + 10}.5f\n" % (x[i], y[i]))
-                # fp.write("{:<12} {:<8}\n".format(x[i], y[i]))
-                fp.write(f"{x[i]:.6f}\t{y[i]:.5f}\n")
+            
+            fp.write('Date/Time : ' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + '\n\n')
+            if self.w_root.comboBox.currentText() == 'Двухпятенный':
+                x = np.divide(np.arange(len(y)), self.pixel_ugl_size)
+                fp.write('Угловой размер пикселя = ' + str(self.pixel_ugl_size) + '\n')
+                fp.write('Угловое расстояние между пятнами = ' + self.w_root.lineEdit_7.text() + " угловых секунд" + '\n\n') 
+                fp.write('-----------------------------------------------\n')
+                fp.write('Измерения ЭПР: \n')
+                try:
+                    fp.write('Левое пятно = ' + f"{Decimal(str(self.epr1)):.4e}" + '  м^2\n')
+                    fp.write('Правое пятно = ' + f"{Decimal(str(self.epr2)):.4e}" + '  м^2\n\n\n')
+                except:
+                    fp.write('Левое пятно = ' + f"Неизвестно" + '  м^2\n')
+                    fp.write('Правое пятно = ' + f"Неизвестно" + '  м^2\n\n\n')
+                for i in range(len(y)):
+                    # fp.write(str(x[i]))
+                    # fp.write(f"%{len(str(max(x))) + 1}.6f%{len(str(max(y))) + 10}.5f\n" % (x[i], y[i]))
+                    # fp.write("{:<12} {:<8}\n".format(x[i], y[i]))
+                    fp.write(f"{x[i]:.6f}\t{y[i]:.5f}\n")
+            else:
+                fp.write(f"Максимальная яркость =  {y[int(self.mean)]}\n\n")
+                x = np.divide(np.arange(len(y)), self.pixel_ugl_size) - np.divide(self.mean,self.pixel_ugl_size)
+                for i in range(len(y)):
+                    fp.write(f"{x[i]:.6f}\t{y[i]:.5f}\n")
             fp.close()  
             done = QMessageBox()
             done.setWindowTitle("Информация")

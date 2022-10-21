@@ -1228,6 +1228,26 @@ border: 2px solid gray;</string>
      <string>Сохранить график</string>
     </property>
    </widget>
+   <widget class="QComboBox" name="comboBox">
+    <property name="geometry">
+     <rect>
+      <x>280</x>
+      <y>20</y>
+      <width>101</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <item>
+     <property name="text">
+      <string>Двухпятенный</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Однопятенный</string>
+     </property>
+    </item>
+   </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
