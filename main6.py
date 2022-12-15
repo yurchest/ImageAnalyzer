@@ -404,7 +404,7 @@ class App(QWidget):
         self.count = 0
         self.current_line_button = button
         self.button_clicked(button)
-        self.calculate_update_all()
+        # self.calculate_update_all()
         self.timer.start(50)
 
     def while_pressed(self):
