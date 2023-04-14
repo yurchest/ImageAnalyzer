@@ -371,7 +371,7 @@ class App(QWidget):
                 x = np.divide(np.arange(len(y)), self.pixel_ugl_size)
                 fp.write('Угловой размер пикселя = ' + str(self.pixel_ugl_size) + '\n')
                 fp.write('Угловое расстояние между пятнами = ' + self.w_root.lineEdit_7.text() + " угловых секунд" + '\n')
-                fp.write('Максимальная яркосит = ' + self.w_root.lineEdit_10.text() + " условных единиц" + '\n\n') ###########
+                fp.write('Максимальная яркость = ' + self.w_root.lineEdit_10.text() + " условных единиц" + '\n\n') ###########
                 fp.write('-----------------------------------------------\n')
                 fp.write('Измерения ЭПР: \n')
                 try:
