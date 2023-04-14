@@ -91,10 +91,12 @@ class App(QWidget):
                 if data[2] != "\n": self.show_kontr_ugl_length = data[2].strip()
                 if data[4] != "\n": self.kontr_centr = float(data[4].strip())
                 if data[5] != "\n": self.bright_kontr = float(data[5].strip())
+                if data[6] != "\n": self.max_bright_kontr = float(data[6].strip())
 
             self.w_root.lineEdit.setText(data[0].strip().replace('.', ','))
             self.epr_kontr = 1e7
             self.w_root.lineEdit_2.setText(f"{Decimal(str(self.epr_kontr)):.4e}")
+
 
             # self.w_root.radioButton.setChecked(bool(data[2].strip()))
         else:
@@ -144,8 +146,10 @@ class App(QWidget):
 
     def update_plot(self):
         if self.file_opened:
+            self.ax.clear()
+            self.ax.set_ylabel("Интенсивность")
+            self.ax.set_xlabel("угл. сек.")
             if self.w_root.comboBox.currentText() == 'Однопятенный':
-                self.ax.clear()
                 self.ax.grid(axis="y")
                 line = np.array(self.Img1.get_line())
                 self.mean = self.find_one_mean(line)
@@ -158,7 +162,7 @@ class App(QWidget):
             else:  
                 try:
 
-                    self.ax.clear()
+                    # self.ax.clear()
                     self.ax.grid(axis="y")
                     line = np.array(self.Img1.get_line())
                     self.ax.plot(np.divide(np.arange(line.size), self.pixel_ugl_size), line)
@@ -371,7 +375,8 @@ class App(QWidget):
                 x = np.divide(np.arange(len(y)), self.pixel_ugl_size)
                 fp.write('Угловой размер пикселя = ' + str(self.pixel_ugl_size) + '\n')
                 fp.write('Угловое расстояние между пятнами = ' + self.w_root.lineEdit_7.text() + " угловых секунд" + '\n')
-                fp.write('Максимальная яркость = ' + self.w_root.lineEdit_10.text() + " условных единиц" + '\n\n') ###########
+                fp.write('Максимальная яркость измеряемого УО = ' + self.w_root.lineEdit_10.text() + " условных единиц" + '\n')
+                fp.write('Максимальная яркость контрольного УО = ' + str(int(self.max_bright_kontr)) + " условных единиц" + '\n\n')
                 fp.write('-----------------------------------------------\n')
                 fp.write('Измерения ЭПР: \n')
                 try:
