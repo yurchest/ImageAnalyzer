@@ -21,7 +21,10 @@ class Settings(QWidget):
         self.w_root = Ui_Dialog()
         self.w_root.setupUi(self.w2)
 
-        self.w2.setWindowFlag(QtCore.Qt.WindowCloseButtonHint, False)
+
+        # self.w2.setWindowFlags(self.windowFlags() & ~QtCore.Qt.WindowCloseButtonHint & QtCore.Qt.WindowMinimizeButtonHint)
+        # self.w2.setWindowFlags(self.windowFlags() & ~QtCore.Qt.MSWindowsFixedSizeDialogHint)
+        # self.w2.setWindowFlag(QtCore.Qt.WindowMinimizeButtonHint)
         self.file_opened = False
         self.read_from_cfg_file_set_values()
 
@@ -39,9 +42,16 @@ class Settings(QWidget):
 
         self.w_root.lineEdit.textChanged.connect(self.update_plot)
 
+        self.w2.closeEvent = self.closeEvent
+
         self.init_plot()
 
         # self.w2.show()
+
+    def closeEvent(self, event):
+        self.set_mainwindow_active.emit(True)
+        event.accept()
+
 
     def read_from_cfg_file_set_values(self):
         if os.path.isfile("cfg/sett.txt"):
