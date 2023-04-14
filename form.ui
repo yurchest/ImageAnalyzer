@@ -52,7 +52,7 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>50</y>
+      <y>70</y>
       <width>186</width>
       <height>41</height>
      </rect>
@@ -92,7 +92,7 @@
     <property name="geometry">
      <rect>
       <x>220</x>
-      <y>60</y>
+      <y>70</y>
       <width>391</width>
       <height>41</height>
      </rect>
@@ -114,7 +114,7 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>100</y>
+      <y>120</y>
       <width>500</width>
       <height>500</height>
      </rect>
@@ -184,7 +184,7 @@
     <property name="geometry">
      <rect>
       <x>550</x>
-      <y>270</y>
+      <y>290</y>
       <width>51</width>
       <height>61</height>
      </rect>
@@ -224,7 +224,7 @@
     <property name="geometry">
      <rect>
       <x>550</x>
-      <y>370</y>
+      <y>390</y>
       <width>51</width>
       <height>61</height>
      </rect>
@@ -271,8 +271,8 @@
    <widget class="QPushButton" name="find_centre_button">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>610</y>
+      <x>30</x>
+      <y>630</y>
       <width>191</width>
       <height>41</height>
      </rect>
@@ -347,8 +347,8 @@
    <widget class="QPushButton" name="settings_button">
     <property name="geometry">
      <rect>
-      <x>290</x>
-      <y>610</y>
+      <x>340</x>
+      <y>630</y>
       <width>191</width>
       <height>41</height>
      </rect>
@@ -388,7 +388,7 @@
     <property name="geometry">
      <rect>
       <x>1170</x>
-      <y>90</y>
+      <y>10</y>
       <width>251</width>
       <height>51</height>
      </rect>
@@ -410,7 +410,7 @@
     <property name="geometry">
      <rect>
       <x>1420</x>
-      <y>100</y>
+      <y>20</y>
       <width>151</width>
       <height>31</height>
      </rect>
@@ -449,7 +449,7 @@ border: 2px solid gray;</string>
     <property name="geometry">
      <rect>
       <x>1170</x>
-      <y>160</y>
+      <y>70</y>
       <width>251</width>
       <height>51</height>
      </rect>
@@ -471,7 +471,7 @@ border: 2px solid gray;</string>
     <property name="geometry">
      <rect>
       <x>1420</x>
-      <y>170</y>
+      <y>80</y>
       <width>151</width>
       <height>31</height>
      </rect>
@@ -509,8 +509,8 @@ border: 2px solid gray;</string>
    <widget class="QLabel" name="label_7">
     <property name="geometry">
      <rect>
-      <x>1170</x>
-      <y>230</y>
+      <x>1270</x>
+      <y>140</y>
       <width>251</width>
       <height>51</height>
      </rect>
@@ -532,7 +532,7 @@ border: 2px solid gray;</string>
     <property name="geometry">
      <rect>
       <x>1170</x>
-      <y>280</y>
+      <y>190</y>
       <width>251</width>
       <height>51</height>
      </rect>
@@ -554,7 +554,7 @@ border: 2px solid gray;</string>
     <property name="geometry">
      <rect>
       <x>1420</x>
-      <y>290</y>
+      <y>200</y>
       <width>151</width>
       <height>31</height>
      </rect>
@@ -593,7 +593,7 @@ border: 2px solid gray;</string>
     <property name="geometry">
      <rect>
       <x>1170</x>
-      <y>140</y>
+      <y>60</y>
       <width>371</width>
       <height>16</height>
      </rect>
@@ -606,7 +606,7 @@ border: 2px solid gray;</string>
     <property name="geometry">
      <rect>
       <x>1170</x>
-      <y>330</y>
+      <y>240</y>
       <width>251</width>
       <height>51</height>
      </rect>
@@ -628,7 +628,7 @@ border: 2px solid gray;</string>
     <property name="geometry">
      <rect>
       <x>1420</x>
-      <y>340</y>
+      <y>250</y>
       <width>151</width>
       <height>31</height>
      </rect>
@@ -667,7 +667,7 @@ border: 2px solid gray;</string>
     <property name="geometry">
      <rect>
       <x>1170</x>
-      <y>210</y>
+      <y>120</y>
       <width>371</width>
       <height>16</height>
      </rect>
@@ -680,7 +680,7 @@ border: 2px solid gray;</string>
     <property name="geometry">
      <rect>
       <x>1170</x>
-      <y>390</y>
+      <y>300</y>
       <width>371</width>
       <height>16</height>
      </rect>
@@ -692,8 +692,8 @@ border: 2px solid gray;</string>
    <widget class="QLabel" name="label_13">
     <property name="geometry">
      <rect>
-      <x>1170</x>
-      <y>400</y>
+      <x>1270</x>
+      <y>310</y>
       <width>291</width>
       <height>51</height>
      </rect>
@@ -714,8 +714,8 @@ border: 2px solid gray;</string>
    <widget class="QLabel" name="label_14">
     <property name="geometry">
      <rect>
-      <x>1170</x>
-      <y>430</y>
+      <x>1280</x>
+      <y>340</y>
       <width>291</width>
       <height>51</height>
      </rect>
@@ -737,7 +737,7 @@ border: 2px solid gray;</string>
     <property name="geometry">
      <rect>
       <x>1170</x>
-      <y>570</y>
+      <y>480</y>
       <width>371</width>
       <height>16</height>
      </rect>
@@ -750,7 +750,7 @@ border: 2px solid gray;</string>
     <property name="geometry">
      <rect>
       <x>1420</x>
-      <y>600</y>
+      <y>570</y>
       <width>151</width>
       <height>31</height>
      </rect>
@@ -789,7 +789,7 @@ border: 2px solid gray;</string>
     <property name="geometry">
      <rect>
       <x>1170</x>
-      <y>590</y>
+      <y>560</y>
       <width>251</width>
       <height>51</height>
      </rect>
@@ -824,7 +824,7 @@ border: 2px solid gray;</string>
     <property name="geometry">
      <rect>
       <x>1420</x>
-      <y>480</y>
+      <y>390</y>
       <width>151</width>
       <height>31</height>
      </rect>
@@ -863,7 +863,7 @@ border: 2px solid gray;</string>
     <property name="geometry">
      <rect>
       <x>1420</x>
-      <y>530</y>
+      <y>440</y>
       <width>151</width>
       <height>31</height>
      </rect>
@@ -902,7 +902,7 @@ border: 2px solid gray;</string>
     <property name="geometry">
      <rect>
       <x>1170</x>
-      <y>520</y>
+      <y>430</y>
       <width>251</width>
       <height>51</height>
      </rect>
@@ -924,7 +924,7 @@ border: 2px solid gray;</string>
     <property name="geometry">
      <rect>
       <x>1170</x>
-      <y>470</y>
+      <y>380</y>
       <width>251</width>
       <height>51</height>
      </rect>
@@ -1170,7 +1170,7 @@ border: 2px solid gray;</string>
     <property name="geometry">
      <rect>
       <x>1430</x>
-      <y>630</y>
+      <y>600</y>
       <width>210</width>
       <height>32</height>
      </rect>
@@ -1233,7 +1233,7 @@ border: 2px solid gray;</string>
      <rect>
       <x>280</x>
       <y>20</y>
-      <width>101</width>
+      <width>151</width>
       <height>22</height>
      </rect>
     </property>
@@ -1247,6 +1247,107 @@ border: 2px solid gray;</string>
       <string>Однопятенный</string>
      </property>
     </item>
+   </widget>
+   <widget class="QLabel" name="label_20">
+    <property name="geometry">
+     <rect>
+      <x>1170</x>
+      <y>510</y>
+      <width>251</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Times New Roman</family>
+      <pointsize>14</pointsize>
+      <weight>50</weight>
+      <italic>false</italic>
+      <bold>false</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Максимальная яркость:</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lineEdit_10">
+    <property name="geometry">
+     <rect>
+      <x>1420</x>
+      <y>520</y>
+      <width>151</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">    border-radius: 10px;
+border: 2px solid gray;</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+    <property name="clearButtonEnabled">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="settings_button_2">
+    <property name="geometry">
+     <rect>
+      <x>180</x>
+      <y>690</y>
+      <width>221</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>-1</pointsize>
+      <weight>75</weight>
+      <italic>false</italic>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">#settings_button_2{   
+ background-color: rgba(140,140,140);
+    border-width: 2px;
+    border-radius: 10px;
+    font: bold 14px;
+    min-width: 10em;
+    padding: 6px;
+}
+	
+#settings_button_2:hover {
+	background-color: rgba(160,160,160);
+}
+
+
+#settings_button_2:pressed {
+	background-color:  rgba(180,180,180);
+}</string>
+    </property>
+    <property name="text">
+     <string>Сохранить изображение</string>
+    </property>
    </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>

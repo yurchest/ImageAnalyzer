@@ -78,6 +78,7 @@ class App(QWidget):
         self.timer.timeout.connect(self.while_pressed)
 
         self.w_root.settings_button.clicked.connect(self.open_settings)
+        self.w_root.settings_button_2.clicked.connect(self.save_img)
 
         self.main_window.show()
 
@@ -330,8 +331,15 @@ class App(QWidget):
             if img: self.update_image()
             if plot: self.update_plot()
             if setlen: self.calc_set_length()
+            self.update_max_bright()
+
         else:
             self.w_root.statusbar.showMessage("Файл не открыт ", 2500)
+
+
+    def update_max_bright(self):
+        self.max_bright = self.Img1.get_max_bright()
+        self.w_root.lineEdit_10.setText(str(self.max_bright))
 
     def update_image(self):
         if self.file_opened:
@@ -362,7 +370,8 @@ class App(QWidget):
             if self.w_root.comboBox.currentText() == 'Двухпятенный':
                 x = np.divide(np.arange(len(y)), self.pixel_ugl_size)
                 fp.write('Угловой размер пикселя = ' + str(self.pixel_ugl_size) + '\n')
-                fp.write('Угловое расстояние между пятнами = ' + self.w_root.lineEdit_7.text() + " угловых секунд" + '\n\n') 
+                fp.write('Угловое расстояние между пятнами = ' + self.w_root.lineEdit_7.text() + " угловых секунд" + '\n')
+                fp.write('Максимальная яркосит = ' + self.w_root.lineEdit_10.text() + " условных единиц" + '\n\n') ###########
                 fp.write('-----------------------------------------------\n')
                 fp.write('Измерения ЭПР: \n')
                 try:
@@ -421,7 +430,7 @@ class App(QWidget):
             self.canvas.print_figure(f"measurements/{name_of_file}")
             done = QMessageBox()
             done.setWindowTitle("Информация")
-            done.setText(f"График успешно сохранен под именем : {name_of_file}       ")
+            done.setText(f"График успешно сохранен под именем :\n {name_of_file}       ")
             done.exec()
             self.w_root.statusbar.showMessage("Готово ", 2500)
         except Exception as err:
@@ -432,6 +441,26 @@ class App(QWidget):
             error.exec()
             self.w_root.statusbar.showMessage("Ошибка сохранения графика    ........" + str(err), 2000)
 
+    def save_img(self):
+        if self.file_opened:
+            try:
+                date_time = datetime.now().strftime("%m.%d.%Y___%H-%M-%S")
+                name_of_file = f"measurements/Image {date_time}.bmp"
+                self.Img1.save_img(name_of_file)
+                done = QMessageBox()
+                done.setWindowTitle("Информация")
+                done.setText(f"Изображение успешно сохранен под именем :\n {name_of_file}       ")
+                done.exec()
+                self.w_root.statusbar.showMessage("Готово ", 2500)
+            except Exception as err:
+                error = QMessageBox()
+                error.setWindowTitle("Ошибка")
+                error.setText("Ошибка сохранения графика\n" + str(err))
+                error.setIcon(QMessageBox.Information)
+                error.exec()
+                self.w_root.statusbar.showMessage("Ошибка сохранения графика    ........" + str(err), 2000)
+        else:
+            self.w_root.statusbar.showMessage("Файл не открыт ", 2500)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

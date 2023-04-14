@@ -56,3 +56,9 @@ class Img:
             imgs.append(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY))
         result_img = np.mean(np.array(imgs), axis=0).astype(np.uint8)
         return result_img
+
+    def get_max_bright(self):
+        return np.max(self.img)
+
+    def save_img(self, name_of_file):
+        cv2.imwrite(name_of_file, self.img)
