@@ -1,0 +1,7 @@
+12.0
+12.0
+False
+['C:/Users/Администратор/Documents/Черемных/ProjectsProgramming/ImageAnalyzer/ImageAnalyzer/image2.bmp']
+375
+255
+255
